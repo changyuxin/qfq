@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.member.dao.MemberDao">
+
+	
+	<!-- 根据userId查询会员 -->
+	<select id="getMemberByUserId" resultType="com.qinfenqi.mall.member.query.MemberQuery" parameterType="long">
+		select * from qfq_core_member where user_id = #{userId}
+	</select>
+	
+	<!-- 根据id查询会员 -->
+	<sql id="qmfilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			<if test="memberId == 0">
+				and user_id = #{userId}
+	 		</if> 
+	 		<if test="memberId > 0">
+				and member_id = #{memberId}
+	 		</if> 
+		</trim>
+	</sql>
+	<select id="getMemberById" resultType="com.qinfenqi.mall.member.query.MemberQuery" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		select * from qfq_core_member <include refid="qmfilter"/>
+	</select>
+
+	<!-- 根据条件查询会员 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+				m.user_id = u.user_id and is_id_oauth != 1
+			<if test="username != null and username != ''">
+				and u.username = #{username}
+	 		</if> 
+	 		<if test="trueName != null and trueName != ''">
+				and m.true_name = #{trueName}
+	 		</if> 
+	 		<if test="isIdOauth > 0">
+				and is_id_oauth = #{isIdOauth}
+	 		</if>
+	 		<if test="isContactOauth > 0">
+				and is_contact_oauth  = #{isContactOauth}
+	 		</if>
+	 		<if test="isBkcardOauth > 0">
+				and is_bkcard_oauth = #{isBkcardOauth}
+	 		</if> 
+	 		<if test="isEcpOauth > 0">
+				and is_ecp_oauth  = #{isEcpOauth}
+	 		</if> 
+	 		 <if test="isCardOauth > 0">
+				and is_card_oauth = #{isCardOauth}
+	 		</if> 
+	 		<if test="isBkflowOauth > 0">
+				and is_bkflow_oauth  = #{isBkflowOauth}
+	 		</if> 
+	 		
+	 		<!-- 查询每步审核通过的会员  start -->
+	 		<if test="auditStatus == 5" >
+				and is_id_oauth = 3 and is_contact_oauth  = 3 and is_bkcard_oauth = 3 
+			</if>
+	 		<if test="auditStatus == 6" >
+				and is_id_oauth = 3 and is_contact_oauth  = 3 and is_bkcard_oauth = 3 and is_ecp_oauth  = 3 and is_card_oauth = 3
+			</if>
+	 		<if test="auditStatus == 7" >
+				and is_id_oauth = 3 and is_contact_oauth  = 3 and is_bkcard_oauth = 3 and is_ecp_oauth  = 3 and is_card_oauth = 3 and is_bkflow_oauth  = 3
+			</if>
+			<!--  
+	 		<if test="auditStatus > 4">
+				and audit_status = 3
+			</if>
+			-->
+			<if test="auditStatus == 99">
+				and audit_status = #{auditStatus}
+			</if>
+			<if test="auditStatus != 99">
+				and audit_status != 99
+			</if>
+			<!-- 查询每步审核通过的会员  end -->
+			
+	 		<if test="auditStatus > 0 and auditStatus &lt; 5" >
+				and audit_status = #{auditStatus}
+			</if>
+	 		<if test="startTime != null and startTime != ''">
+				<![CDATA[ and m.CREATE_TIME >= #{startTime} ]]>
+			</if>
+			<if test="endTime != null and endTime != ''">
+				<![CDATA[ and m.CREATE_TIME <= #{endTime} ]]>
+			</if>
+		</trim>
+	</sql>
+	<select id="getMemberList" resultType="com.qinfenqi.mall.member.query.MemberQuery" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		select u.username, m.* from qfq_core_member m, qfq_core_users u <include refid="sqlFilter"/> ORDER BY ${orderField} desc
+		<if test="isPage">
+			limit #{startNo}, #{pageSize}
+		</if>
+	</select>
+	
+	<update id="updateMemberSpy" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set supply_photo = #{supplyPhoto} where member_id = #{memberId}
+	</update>		
+	
+	<!-- 删除会员  -->
+	<delete id="deleteMember" parameterType="long">
+		delete from qfq_core_member where user_id = #{userId}
+	</delete>
+	
+	<!-- 编辑会员 -->
+	<update id="update" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member 
+		<set>   
+	         <if test="isIdOauth > 0">   
+	             is_id_oauth  = #{isIdOauth},
+	         </if>   
+	         <if test="isContactOauth > 0">
+				is_contact_oauth  = #{isContactOauth},
+	 		</if>
+			<if test="isBkcardOauth > 0">
+				is_bkcard_oauth  = #{isBkcardOauth},
+	 		</if>
+	 		<if test="isEcpOauth > 0">
+				is_ecp_oauth = #{isEcpOauth},
+	 		</if>
+	 		<if test="isCardOauth > 0">
+				is_card_oauth = #{isCardOauth},
+	 		</if>
+	 		<if test="isBkflowOauth > 0">
+				is_bkflow_oauth = #{isBkflowOauth},
+	 		</if>
+	 		<if test="creditLimit > 6000">
+				credit_limit = #{creditLimit},
+	 		</if>
+	 		<if test="auditStatus > 1">
+				audit_status = #{auditStatus},
+	 		</if>
+	 		<if test="auditCount > 0">
+				audit_count = #{auditCount},
+	 		</if>
+				audit_time = #{auditTime}
+	     </set>   
+		where member_id = #{memberId}
+	</update>
+	
+	<!-- 更新审核记录 -->
+	<update id="updateMemberOauth" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member 
+		<set>   
+	         <if test="isIdOauth > 0">   
+	             is_id_oauth  = #{isIdOauth},
+	         </if>
+	         <if test="isContactOauth > 0">
+				is_contact_oauth  = #{isContactOauth},
+	 		</if>
+			<if test="isBkcardOauth > 0">
+				is_bkcard_oauth  = #{isBkcardOauth},
+	 		</if>
+	 		<if test="isEcpOauth > 0">
+				is_ecp_oauth = #{isEcpOauth},
+	 		</if>
+	 		<if test="isCardOauth > 0">
+				is_card_oauth = #{isCardOauth},
+	 		</if>
+	 		<if test="isBkflowOauth > 0">
+				is_bkflow_oauth = #{isBkflowOauth},
+	 		</if>
+	 		<if test="idOauthOpinion != null">   
+	        	id_oauth_opinion  = #{idOauthOpinion},
+	        </if>
+	 		<if test="contactOauthOpinion != null">   
+	        	contact_oauth_opinion  = #{contactOauthOpinion},
+	        </if>
+	 		<if test="bkcardOauthOpinion != null">   
+	        	bkcard_oauth_opinion  = #{bkcardOauthOpinion},
+	        </if>
+	 		<if test="ecpOauthOpinion != null">   
+	        	ecp_oauth_opinion  = #{ecpOauthOpinion},
+	        </if>
+	 		<if test="cardOauthOpinion != null">   
+	        	card_oauth_opinion  = #{cardOauthOpinion},
+	        </if>
+	 		<if test="bkflowOauthOpinion != null">   
+	        	bkflow_oauth_opinion  = #{bkflowOauthOpinion},
+	        </if>
+	        <if test="creditLimit >= 0">
+	       		credit_limit = #{creditLimit},
+	       	</if>
+	       	<if test="auditStatus > 1">
+				audit_status = #{auditStatus},
+	 		</if>
+	 		audit_time = #{auditTime}
+	     </set>   
+		where member_id = #{memberId}
+	</update>
+	
+	<!-- 更新会员信用额度 -->
+	<update id="updateCreditLimit" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set credit_limit  = #{creditLimit}, used_credit_limit  = #{usedCreditLimit} where member_id = #{memberId}
+	</update>
+	
+	<!-- 验证会员邮箱 -->
+	<select id="getMemberByMailVc" parameterType="com.qinfenqi.mall.member.query.MemberQuery" resultType="com.qinfenqi.mall.member.query.MemberQuery">
+		select * from qfq_core_member where email = #{email}
+	</select>
+	
+	<!-- 根据条件查询会员数量 -->
+	<select id="getMemberCount" resultType="int" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		select count(1) from qfq_core_member m, qfq_core_users u <include refid="sqlFilter"/>
+	</select>
+	
+	<!-- 查询黑名单 -->
+	<select id="queryBlackList" resultType="com.qinfenqi.mall.member.bean.Black"  parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		select * from qfq_core_black_list where name like #{trueName} order by id asc
+	</select>
+	
+	<!-- 根据身份证信息和用户ID查询该身份证号是否已被用过 -->
+	<select id="getMemberByIdCard" resultType="int" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		select count(1) from qfq_core_member m where id_card = #{idCard} and user_id != #{userId}
+	</select>
+	
+	<!-- 根据状态统计会员 -->
+	<select id="getMemberCounts" resultType="com.qinfenqi.mall.bean.Count">
+		select audit_status as name, count(*) as total from qfq_core_member where is_id_oauth != 1 group by audit_status
+	</select>
+	
+	<!-- 保存分配大使信息 -->
+	<update id="saveMemberEmbassy" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set embassy_id = #{embassyId}, embassy_name = #{embassyName}, dist_emba_time = #{distEmbaTime} where member_id = #{memberId}
+	</update>
+	
+	<!-- 归档会员 -->
+	<update id="archive" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set audit_status = 99 where member_id = #{memberId} 
+	</update>
+	
+	<!-- 解除归档会员 -->
+	<update id="unarchive" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set audit_status = 3 where member_id = #{memberId} 
+	</update>
+	
+	<!-- 查询分期业务会员信用信息 -->
+	<select id="getCreditListMember" resultType="com.qinfenqi.mall.member.bean.MemberCredit">
+		SELECT 
+			b.order_id as orderId, b.user_id as userId, b.current_month as currentMonth, b.months as months, sum(b.principal) as sumMonthPay, b.payment_status as paymentStatus, m.credit_limit as creditLimit, m.used_credit_limit as usedCreditLimit  
+		FROM 
+			qfq_mall_bill as b, qfq_core_member as m
+		WHERE 
+			b.payment_status != 2 and b.user_id = m.user_id 
+		GROUP BY 
+			b.user_id;
+	<!-- 查询分期业务白领信用信息 -->
+	</select>
+		<select id="getCreditListCollar" resultType="com.qinfenqi.mall.member.bean.MemberCredit">
+		SELECT 
+			b.order_id as orderId, b.user_id as userId, b.current_month as currentMonth, b.months as months, sum(b.principal) as sumMonthPay, b.payment_status as paymentStatus, c.credit_limit as creditLimit, c.used_credit_limit as usedCreditLimit  
+		FROM 
+			qfq_mall_bill as b, qfq_core_collar as c
+		WHERE 
+			b.payment_status != 2 and b.user_id = c.user_id 
+		GROUP BY 
+			b.user_id;
+	</select>
+	
+ 	<!-- 定时更新会员信用额度 -->
+	<update id="updateMemberCredit" parameterType="com.qinfenqi.mall.member.bean.MemberCredit">
+		update qfq_core_member set credit_limit  = #{creditLimit}, used_credit_limit  = #{usedCreditLimit} where user_id = #{userId}
+	</update>
+	<!-- 定时更新白领信用额度 -->
+	<update id="updateCollarCredit" parameterType="com.qinfenqi.mall.member.bean.MemberCredit">
+		update qfq_core_collar set credit_limit  = #{creditLimit}, used_credit_limit  = #{usedCreditLimit} where user_id = #{userId}
+	</update>
+</mapper>

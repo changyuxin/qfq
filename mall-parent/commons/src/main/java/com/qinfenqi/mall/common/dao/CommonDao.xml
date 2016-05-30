@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.common.dao.CommonDao">
+
+	<!-- 获取系统设置的参数 -->
+	<select id="getMallSetting" parameterType="String" resultType="com.qinfenqi.mall.bean.MallSetting">
+		select * from qfq_mall_setting where param_key = #{paramKey}
+	</select>
+
+</mapper>

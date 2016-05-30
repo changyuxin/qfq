@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.order.dao.OrderDao">
+	
+	<!-- 获取订单编号 -->
+	<select id="queryOrderCode" resultType="String">
+		select seq('order')
+	</select>
+	
+	<!-- 创建订单 -->
+	<insert id="createOrder" useGeneratedKeys="true" keyProperty="orderId" parameterType="com.qinfenqi.mall.order.query.OrderQuery">
+		insert into qfq_mall_order
+			(user_id, order_code, product_id, product_name, product_price, product_covimg, quantity, financial_rate, financial_pay, service_pay, month_pay, months, first_pay, order_total, receive_name, receive_address, receive_mobile, service_rate, create_time, audit_opinion, order_types, order_status) 
+		values 
+			(#{userId}, #{orderCode}, #{productId}, #{productName}, #{productPrice}, #{productCovimg}, #{quantity}, #{financialRate}, #{financialPay}, #{servicePay}, #{monthPay}, #{months}, #{firstPay}, #{orderTotal}, #{receiveName}, #{receiveAddress}, #{receiveMobile}, #{serviceRate}, #{createTime}, #{auditOpinion}, #{orderTypes}, #{orderStatus});
+	</insert>
+	
+	<!-- 根据ID查询订单 -->
+	<select id="getOrderById" resultType="com.qinfenqi.mall.order.query.OrderQuery" parameterType="com.qinfenqi.mall.order.query.OrderQuery" >
+		select * from qfq_mall_order where order_id = #{orderId} 
+	</select>		
+	
+	<!-- 保存发货信息 -->
+	<update id="saveDeliverInfoByOrderId" parameterType="com.qinfenqi.mall.order.query.OrderQuery">
+		update qfq_mall_order set 
+			deliver_name = #{deliverName}, 
+			deliver_code = #{deliverCode}, 
+			product_imei = #{productImei}, 
+			deliver_status = #{deliverStatus}, 
+			deliver_time = #{deliverTime},
+			update_time = #{updateTime},
+			order_status = #{orderStatus}
+		where order_id = #{orderId}
+	</update>
+	
+	<!-- 更新订单收货人信息 -->
+	<update id="saveReceiveInfoByOrderId" parameterType="com.qinfenqi.mall.order.query.OrderQuery">
+		update qfq_mall_order set 
+			receive_name = #{receiveName}, 
+			receive_mobile = #{receiveMobile}, 
+			receive_address = #{receiveAddress}
+		where order_id = #{orderId}
+	</update>
+	
+	<update id="updateFirstPayStatus" parameterType="com.qinfenqi.mall.order.query.OrderQuery">
+		update qfq_mall_order set first_pay_status = #{firstPayStatus} where order_id = #{orderId}
+	</update>
+	
+	<!-- 更新订单状态 -->
+	<update id="updateOrderStatus" parameterType="com.qinfenqi.mall.order.query.OrderQuery">
+		update qfq_mall_order 
+		<set>   
+			<if test="orderStatus > 0">   
+				order_status = #{orderStatus},
+	    	</if>   
+	  		<if test="auditOpinion != null">
+				audit_opinion = #{auditOpinion},
+	 		</if>
+	  		<if test="updateTime != null">
+				update_time = #{updateTime},
+	 		</if>
+		</set>   
+		where order_id = #{orderId}
+	</update>
+	
+	<!-- 查询订单列表 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			o.user_id = u.user_id and o.product_id = p.product_id
+			<if test="userId > 0">
+				and o.user_id  = #{userId}
+	 		</if> 
+	 		<if test="orderCode != null and orderCode != ''">
+				and o.order_code = #{orderCode}
+	 		</if> 
+	 		<if test="receiveName != null and receiveName != ''">
+				and o.receive_name like #{receiveName}
+	 		</if> 
+	 		<if test="deliverCode != null and deliverCode != ''">
+				and o.deliver_code  = #{deliverCode}
+	 		</if> 
+	 		<if test="orderStatus > 0">
+				and o.order_status  = #{orderStatus}
+	 		</if> 
+	 		<if test="orderTypes > 0">
+				and o.order_types  = #{orderTypes}
+	 		</if> 
+	 		<if test="startTime != null and startTime != ''">
+				<![CDATA[ and o.create_time >= #{startTime} ]]>
+			</if>
+			<if test="endTime != null and endTime != ''">
+				<![CDATA[ and o.create_time <= #{endTime} ]]>
+			</if>
+		</trim>
+	</sql>
+	<select id="getOrderList" resultType="com.qinfenqi.mall.order.query.OrderQuery" parameterType="com.qinfenqi.mall.order.query.OrderQuery" >	
+		select o.*, u.user_style, p.product_code from qfq_mall_order o, qfq_core_users u, qfq_mall_product p <include refid="sqlFilter"/>
+		<if test="orderStatus >= 4">
+		 ORDER BY update_time desc 
+		</if>
+		<if test="orderStatus &lt; 4">
+		 ORDER BY order_id desc 
+		</if>
+		<if test="isPage">
+			limit #{startNo}, #{pageSize}
+		</if>
+	</select>
+	<!-- 查询订单列表数量 -->
+	<select id="getOrderCount" resultType="int" parameterType="com.qinfenqi.mall.order.query.OrderQuery" >	
+		select count(1) from qfq_mall_order o, qfq_core_users u, qfq_mall_product p <include refid="sqlFilter"/>
+	</select>
+	<!-- 查询已经发货的订单列表 -->
+	<select id="getDeliverList" resultType="com.qinfenqi.mall.order.query.OrderQuery" >	
+		select * from qfq_mall_order where deliver_status = 2 and order_status = 4
+	</select>
+	
+	<!-- 根据状态统计订单数据 -->
+	<select id="getOrderCounts" resultType="com.qinfenqi.mall.bean.Count">
+		select order_status as name, count(*) as total from qfq_mall_order group by order_status
+	</select>
+	
+	<!-- 更改首付状态 -->
+	<update id="returnFirstPay" parameterType="com.qinfenqi.mall.order.query.OrderQuery">
+		update qfq_mall_order 
+		<set>   
+			<if test="firstPayStatus > 0">   
+				first_pay_status = #{firstPayStatus},
+	    	</if>   
+	  		<if test="updateTime != null">
+				update_time = #{updateTime},
+	 		</if>
+		</set>   
+		where order_id = #{orderId}
+	</update>
+</mapper>

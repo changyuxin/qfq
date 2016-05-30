@@ -1,0 +1,59 @@
+/*帮助页列表*/
+.grzx{width:1200px; margin:15px auto; overflow:hidden;}
+.grzx_left{width:216px; float:left; background:#ffffff;}
+.grzx_left h3{cursor:pointer;border:1px solid transparent; display:block; width:100%; height:37px; background-color:#ff3700; line-height:36px; text-align:center; font-size:16px;  color:#FFF; }
+.grzx_left h4{border:1px solid transparent;  cursor:pointer; display:block; width:100%; height:37px; background-color:#aaa; line-height:36px; text-align:center; font-size:16px;  color:#FFF; }
+.grzx_lm{ width:100%; border-left:1px solid #e3e3e3; border-right:1px solid #e3e3e3; border-bottom:1px solid #e3e3e3;}
+.grzx_lm ul{display:block; margin:0 auto; padding:0 20px;}
+.grzx_lm ul li{line-height:36px;border-bottom: 1px solid #e3e3e3;}
+.grzx_lm ul li a{display:block; text-align:center;font-size:14px; color:#525151;}
+.grzx_lm ul li a:hover,.grzx_lm ul li a.red_a{ color:#ff3700;}
+.grzx_lm ul .nobb{border-bottom: 0}
+/*帮助页内容*/
+.grzx_right{width:957px; float:left; margin-left:20px; background:#ffffff; border:1px solid #e3e3e3;}
+.grzx_right h3{ padding-left:26px; height:39px; border-bottom:1px solid #e2e2e2; background:#f9f9f9; line-height:38px;  font-size:16px; color:#444;}
+
+table td[align="left"]{ padding-left:20px;}
+.mydd {width:94%; margin:0px auto;color: #333;font-size: 13px;}
+.mydd p{line-height: 24px; color:#666;}
+.mydd p b{ color:#333;}
+.mydd p s a{ color:#4eaccc; font-style:italic; text-decoration:none;}
+.contract{overflow:hidden;}
+.contract1{overflow:hidden;}
+.contract-left{ float:left; margin:30px 0 30px 0;}
+.contract-left p span,.contract-left1 p span,table td span{ font-weight:bold;}
+.contract-bottom p span,.contract-bottom1 p span{text-decoration:underline; font-weight:bold;}
+.contract-bottom{position:relative;}
+.contract-bottom,.contract-bottom1{float:left; margin-top:30px;}
+.contract-bottom s{ width:149px; height:149px; background:url(../img/allIcon.png) no-repeat -4px -214px; position:absolute; top:-30px; left:40px;}
+.contract-bottom p,.contract-bottom1 p{ line-height:70px;}
+.contract-bottom1{float:left;margin-left:300px;}
+.contract-left1{float:left; margin:30px 0 30px 60px;}
+/*借款协议界面使用的样式*/
+.mydd table {margin:0 auto;border-collapse: collapse;margin-top:20px;margin-bottom:20px;}
+.mydd td{font-size: 12px;border: 1px solid #333;padding: 5px;line-height: 24px;}
+.text-center td {text-align: center;}
+
+.jiekuanxieyi .mydd {font-size: 13px;color: #333;text-indent: 30px;}
+.jiekuanxieyi .tr0 {background-color: #f5f5f5}
+.jiekuanxieyi .yue {padding-left: 40px;}
+.jiekuanxieyi .tab td {padding-left: 20px;}
+.jiekuanxieyi .p0 {text-align: right}
+.jiekuanxieyi .pp0 {font-size: 26px;text-align: center; color:#333}
+.jiekuanxieyi .p1 {margin-left: 50px;font-size: 16px;}
+.mydd .zaixianzhifu{text-decoration: underline;}
+.mydd .zaixianzhifu:HOVER{ color: #ff3700;}
+.main-wrap{ width:1200px; margin:0 auto;}
+.main-wrap .ft-main .ft-mobile{width: 160px;}
+.list-tuihuan{margin-top:10px;margin-bottom:10px;}
+.list-tuihuan a{padding:0 8px;color:#59d1e0;}
+.list-tuihuan:first-child{margin-left:20px;}
+
+.mydd{margin-top:30px;}
+.mydd dl{ margin:20px 0;}
+.mydd dt{font-size:12px; font-weight:bold;}
+.mydd dt,.mydd dd{ line-height:25px;}
+h2{margin-top:25px;}
+.tui .tui-box{display:none;}
+.tui .tui-first{display:block;}
+

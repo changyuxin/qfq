@@ -1,0 +1,67 @@
+body {
+	margin: 0px;
+	padding: 0px;
+}
+.iphone6s {
+	border-top: 2px solid #ff4400;
+	border-bottom: 2px solid #ff4400;
+}
+.iphone6s .mfigurebox {
+	background: #f0f0f0;
+}
+.iphone6s .mfigurebg {
+	height: 1092px;
+	width:1200px;
+	margin: 0 auto;
+	position: relative;
+	background: #f0f0f0 url(../mall/images/6s/pic_01.jpg) no-repeat scroll center top;
+}
+.iphone6s .order_lbtn {
+	height:300px;
+	position:absolute;
+	top:550px;
+	width:600px;
+	left: 0px;
+}
+.iphone6s .order_rbtn {
+	height:300px;
+	position:absolute;
+	top:550px;
+	width: 600px;
+	left: 600px;
+}
+.iphone6s .mphone6s_01 {
+	height: 2161px;
+	width: 100%;
+	background: #fff url(../mall/images/6s/mphone6s_01.jpg) no-repeat scroll center top;
+}
+.iphone6s .mphone6s_02 {
+	height: 1273px;
+	width: 100%;
+	background: #fafafa url(../mall/images/6s/mphone6s_02.jpg) no-repeat scroll center top;
+}
+.iphone6s .mphone6s_03 {
+	height: 1510px;
+	width: 100%;
+	background: #fafafa url(../mall/images/6s/mphone6s_03.jpg) no-repeat scroll center top;
+}
+.iphone6s .mphone6s_04 {
+	height: 934px;
+	width: 100%;
+	background: #fff url(../mall/images/6s/mphone6s_04.jpg) no-repeat scroll center top;
+}
+.iphone6s .mphone6s_05 {
+	height: 779px;
+	width: 100%;
+	background: #f4f4f4 url(../mall/images/6s/mphone6s_05.jpg) no-repeat scroll center top;
+}
+.iphone6s .mphone6s_06 {
+	height: 880px;
+	width: 100%;
+	background: #fff url(../mall/images/6s/mphone6s_06.jpg) no-repeat scroll center top;
+}
+.iphone6s .mphone6s_07 {
+	height: 1146px;
+	width: 100%;
+	background: #f4f4f4 url(../mall/images/6s/mphone6s_07.jpg) no-repeat scroll center top;
+}

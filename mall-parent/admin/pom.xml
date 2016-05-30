@@ -1,0 +1,68 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.qinfenqi.mall</groupId>
+		<artifactId>mall-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>admin</artifactId>
+	<packaging>jar</packaging>
+
+	<name>admin</name>
+
+	<build>
+		<testOutputDirectory>WebRoot/WEB-INF/classes</testOutputDirectory>
+		<outputDirectory>WebRoot/WEB-INF/classes</outputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<!-- @desc:打war包,自动会将class文件打成jar包,然后放到lib里,再打成war包，将class文件打成jar包,方便更新 
+				@edit:修改pom中的"<packaging>war</packaging>",将war改为jar,再执行package -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<!-- src/main/resources是默认的资源目录。 当archiveClasses=true时，resources中的文件资源会被打到jar中； 
+						当archiveClasses=false时，resources中的文件资源在war的根目录。 注： 1、当需要自动部署到远程tomcat服务器时，<warName>属性的注释不需要修改。 
+						2、当需要导出war包时且需要改变war包名称时，需要将<warName>属性的注释去掉，并改成想要的war名称。 如果warName配置不当会导致maven在远程部署时，找不到war包的情况。 -->
+					<archiveClasses>true</archiveClasses>
+					<webResources>
+						<resource>
+							<directory>src/main/resources</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+					<excludes>**/com/**</excludes>
+					<warSourceDirectory>WebRoot</warSourceDirectory>
+					<warName>${project.name}</warName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.qinfenqi.mall</groupId>
+			<artifactId>commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

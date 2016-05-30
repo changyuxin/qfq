@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.manage.dao.CouponDao">
+
+	<!-- 查询优惠券列表 -->
+	<select id="getCouponList" parameterType="com.qinfenqi.mall.manage.query.CouponQuery" resultType="com.qinfenqi.mall.manage.query.CouponQuery">
+		select * from qfq_mall_coupon
+	</select>
+	<select id="getCouponCount" parameterType="com.qinfenqi.mall.manage.query.CouponQuery" resultType="int">
+		select count(*) from qfq_mall_coupon
+	</select>
+	
+	<!-- 根据Id获取优惠券 -->
+	<select id="getCouponById" parameterType="com.qinfenqi.mall.manage.query.CouponQuery" resultType="com.qinfenqi.mall.manage.query.CouponQuery">
+		select * from qfq_mall_coupon where coupon_id = #{couponId}
+	</select>
+	
+	<!-- 添加优惠券 -->
+	<insert id="createCoupon" parameterType="com.qinfenqi.mall.manage.query.CouponQuery">
+		insert into qfq_mall_coupon 
+			(coupon_name, coupon_sums, coupon_total, coupon_type, user_draw, start_time, end_time, create_time) 
+		values 
+			(#{couponName}, #{couponSums}, #{couponTotal}, #{couponType}, #{userDraw}, #{startTime}, #{endTime}, #{createTime})
+	</insert>
+	
+	<!-- 编辑优惠券 -->
+	<update id="modifyCoupon" parameterType="com.qinfenqi.mall.manage.query.CouponQuery">
+		update qfq_mall_coupon
+		<trim prefix="SET" suffixOverrides=","> 
+			<if test="couponName != null and couponName != '' ">
+				coupon_name = #{couponName},
+			</if>
+			<if test="couponSums > 0 ">
+				coupon_sums = #{couponSums},
+		 	</if>
+		 	<if test="couponTotal > 0">
+				coupon_total = #{couponTotal},
+			</if>
+			<if test="couponType > 0 ">
+				coupon_type = #{couponType},
+			</if>
+			<if test="userDraw > 0">
+				user_draw = #{userDraw},
+			</if>
+			<if test="startTime != null">
+				start_time = #{startTime},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime},
+			</if>
+		</trim>
+		where coupon_id = #{couponId}
+	</update>
+	
+	<!-- 启用、停用 -->
+	<update id="enableCoupon" parameterType="com.qinfenqi.mall.manage.query.CouponQuery">
+		update qfq_mall_coupon set is_enable = #{isEnable} where coupon_id = #{couponId}
+	</update>
+	
+	
+	<!-- 删除优惠券 -->
+	<delete id="deleteCoupon" parameterType="com.qinfenqi.mall.manage.query.CouponQuery">
+		delete from qfq_mall_coupon where coupon_id = #{couponId}
+	</delete>
+	
+	<!-- 根据条件查询用户拥有的优惠券 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+	 		<if test="userId > 0">
+				and user_id = #{userId}
+	 		</if>
+	 		<if test="status > 0">
+				and status = #{status}
+		 	</if>
+		</trim>
+	</sql>		
+    <select id="getCouponRecordList" parameterType="com.qinfenqi.mall.manage.bean.CouponRecord" resultType="com.qinfenqi.mall.manage.bean.CouponRecord">
+		select * from qfq_mall_coupon <include refid="sqlFilter"/>  order by ${orderField} ${orderType} 
+	</select>
+</mapper>

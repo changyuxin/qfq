@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.manage.dao.ManageDao">
+	
+	<!-- 生成授权码 -->
+	<insert id="createAuthCode" parameterType="com.qinfenqi.mall.bean.AuthCode">
+		insert into qfq_mall_auth_code (referee_name, name, mobile, code, create_time) values (#{refereeName}, #{name}, #{mobile}, #{code}, #{createTime})
+	</insert>
+	
+	<!-- 通过手机查询授权码 -->
+	<select id="queryAuthCodeByMobile" resultType="com.qinfenqi.mall.bean.AuthCode"  parameterType="com.qinfenqi.mall.bean.AuthCode">
+		select * from qfq_mall_auth_code where mobile = #{mobile}
+	</select>
+	
+	<!-- 查询授权码列表 -->
+		<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			<if test="name != null and name != ''">
+				name = #{name}
+	 		</if> 
+			<if test="mobile != null and mobile != ''">
+				mobile = #{mobile}
+	 		</if> 
+		</trim>
+	</sql>
+	<select id="getAuthCodeList" parameterType="com.qinfenqi.mall.bean.AuthCode" resultType="com.qinfenqi.mall.bean.AuthCode">
+		select * from qfq_mall_auth_code <include refid="sqlFilter"/> order by ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	<select id="getAuthCodeCount" parameterType="com.qinfenqi.mall.bean.AuthCode" resultType="int">
+		select count(1) from qfq_mall_auth_code <include refid="sqlFilter"/>
+	</select>
+	
+	<!-- 删除授权码 -->
+	<delete id="removeCode" parameterType="com.qinfenqi.mall.bean.AuthCode">
+		delete from qfq_mall_auth_code where code_id = #{codeId}
+	</delete>
+	
+	<!-- 查询默认费率列表 -->
+	<select id="queryDefRates" resultType="com.qinfenqi.mall.bean.DefaultRate">
+		select * from qfq_mall_product_default_rate
+	</select>
+	
+	<!-- 删除默认费率 -->
+	<delete id="removeDefRates">
+		delete from qfq_mall_product_default_rate
+	</delete>
+	
+	<!-- 保存默认费率 -->
+	<insert id="createDefRates" parameterType="com.qinfenqi.mall.bean.DefaultRate">
+		insert into qfq_mall_product_default_rate (period_num_start, period_num_end, service_rate)
+			values 
+		<foreach collection="list" item="item" index="index" separator="," >  
+			(#{item.periodNumStart}, #{item.periodNumEnd}, #{item.serviceRate})  
+		</foreach>
+	</insert>
+	
+	<!-- 保存精品推荐产品 -->
+	<insert id="saveRecom" parameterType="com.qinfenqi.mall.manage.bean.ProductRecom">
+		insert into qfq_mall_product_recom (position_id, product_id, create_time)
+			values (#{positionId}, #{productId}, #{createTime})
+	</insert>
+	
+	<!-- 获取推荐产品列表 -->
+	<select id="getProductRecoms" resultType="com.qinfenqi.mall.manage.bean.ProductRecom">
+		select * from qfq_mall_product_recom
+	</select>
+	
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.contract.dao.ContractDao">
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+	 		<if test="code != null and code != ''">
+				code = #{code}
+	 		</if> 
+	 		<if test="belong != null and belong != ''">
+				and belong = #{belong}
+	 		</if> 
+	 		<if test="startTime != null and startTime != ''">
+				<![CDATA[ and CREATE_TIME >= #{startTime} ]]>
+			</if>
+			<if test="endTime != null and endTime != ''">
+				<![CDATA[ and CREATE_TIME <= #{endTime} ]]>
+			</if>
+			<if test="contractStatus != 0">
+				and contract_Status = #{contractStatus}
+			</if>
+			
+		</trim>
+	</sql>
+	<!-- 生成合同编号 -->
+	<select id="getContractCode" resultType="String">
+		select seq('contract')
+	</select>
+	
+	<!-- 创建合同 -->
+	<insert id="createContract" useGeneratedKeys="true" keyProperty="contractId" parameterType="com.qinfenqi.mall.contract.bean.Contract">
+		insert into qfq_mall_contract
+			(user_id, code, order_id,  belong, dead_line, id_card, phone, product_name, service_rate, financial_rate, quantity, product_price, first_pay, months, month_pay, payment_day, create_time) 
+		values 
+			(#{userId}, #{code}, #{orderId}, #{belong}, #{deadLine}, #{idCard}, #{phone}, #{productName}, #{serviceRate}, #{financialRate}, #{quantity}, #{productPrice}, #{firstPay}, #{months}, #{monthPay}, #{paymentDay}, #{createTime});
+	</insert>
+	
+	<!-- 查询合同列表 -->
+	<select id="getContractList" resultType="com.qinfenqi.mall.contract.query.ContractQuery" parameterType="com.qinfenqi.mall.contract.query.ContractQuery" >
+		select * from qfq_mall_contract <include refid="sqlFilter"/> ORDER BY ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	
+	<!-- 查询合同列表数量 -->
+	<select id="getContractCount" resultType="int" parameterType="com.qinfenqi.mall.contract.query.ContractQuery" >	
+		select count(1) from qfq_mall_contract <include refid="sqlFilter"/>
+	</select>
+	
+	<!-- 根据ID查询合同 -->
+	<sql id="contractFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+	 		<if test="contractId > 0">
+				and contract_id = #{contractId}
+	 		</if> 
+	 		<if test="orderId > 0">
+				and order_id = ${orderId}
+	 		</if> 
+		</trim>
+	</sql>
+	<select id="getContractById" resultType="com.qinfenqi.mall.contract.query.ContractQuery" parameterType="com.qinfenqi.mall.contract.query.ContractQuery" >
+		select * from qfq_mall_contract <include refid="contractFilter"/>
+	</select>
+	<!-- 根据ID查询订单列表 -->
+	<select id="getContractByOrderId" resultType="com.qinfenqi.mall.contract.query.ContractQuery" parameterType="com.qinfenqi.mall.contract.query.ContractQuery" >
+		select * from qfq_mall_contract where order_id = #{orderId}
+	</select>
+	
+	<!-- 更改合同状态 -->
+	<update id="updateContract" parameterType="com.qinfenqi.mall.contract.query.ContractQuery">
+		update qfq_mall_contract set contract_status = #{contractStatus} where order_id = ${orderId}
+	</update>
+	
+	<!-- 更改审核状态 -->
+	<update id="updateVerifyStatus" parameterType="com.qinfenqi.mall.contract.query.ContractQuery">
+		update qfq_mall_contract set contract_status = 2 where contract_status = 1 and contract_id = #{contractId} 
+	</update>
+	
+</mapper>

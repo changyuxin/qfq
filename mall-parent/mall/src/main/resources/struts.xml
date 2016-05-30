@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 使用spring来管理struts对象的实例化 -->
+	<constant name="struts.objectFactory" value="spring" />
+	<!-- 文件上传的文件大小 -->
+	<constant name="struts.multipart.maxSize" value="524288000"/>
+
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="devMode" value="true" />
+	<constant name="struts.configuration.xml.reload" value="true"></constant>
+	<constant name="struts.action.extension" value="do" />
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
+
+	<!-- 自动匹配设置 -->
+	<constant name="struts.convention.classes.reload" value="true"></constant>
+	<constant name="struts.convention.result.path" value="/jsp" />
+	<constant name="struts.convention.action.name.separator" value="_" />
+	<constant name="struts.convention.package.locators" value="mall" />
+
+	<constant name="struts.convention.action.packages" value="com.qinfenqi.mall.view" />
+	<constant name="struts.convention.action.includeJars" value=".*?/mall.*?jar(!/)?" />
+	<constant name="struts.convention.action.disableJarScanning" value="true" />
+
+	<constant name="struts.convention.action.suffix" value="Action" />
+	<constant name="struts.convention.action.name.lowercase" value="true" />
+	<constant name="struts.convention.result.flatLayout" value="true" />
+
+	<!-- 全局配置 -->
+	<constant name="struts.convention.default.parent.package" value="struts-base" />
+	<package name="struts-base" extends="struts-default">
+		<!-- 用户登录处理拦截器 -->
+		<interceptors>
+			<interceptor name="login" class="loginInterceptor" />
+			<interceptor-stack name="baseStack">
+				<interceptor-ref name="login">
+					<param name="excludeMethods">login</param> 
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack">
+					<param name="exception.logEnabled">true</param>
+					<param name="exception.logLevel">warn</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="baseStack" />
+		
+		<!-- 定义全局跳转 -->
+		<global-results>
+			<result name="index" type="redirect">/index/index!indexPage.do</result>
+			<result name="login" type="redirect">/login/login.html</result>
+			<result name="timeout" type="redirect">/jsp/common/timeout.jsp</result>
+			<result name="forbidden">/jsp/common/forbidden.jsp</result>
+			<result name="ajax">/jsp/common/ajax.jsp</result>
+			<result name="exception">/jsp/common/error.jsp</result>
+			
+			<!-- word下载 -->
+			<result name="wordDownload" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="contentDisposition">attachment;filename="${downLoadFileName}"</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			
+			<!-- 图片下载 -->
+			<result name="picDisplay" type="stream"> 
+				<param name="contentType">image/jpg/jpeg</param> 
+				<param name="inputName">inputStream</param> 
+				<param name="bufferSize">4096</param> 
+			</result>
+					
+		</global-results>
+
+		<!-- 定义全局异常映射 -->
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception" result="exception" />
+		</global-exception-mappings>
+	</package>
+</struts>

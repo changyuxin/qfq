@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.center.dao.CenterDao">
+	
+	<!-- 查询学校列表 -->
+	<select id="schoolListByProId" parameterType="int" resultType="com.qinfenqi.mall.center.bean.School" >
+		select * from qfq_core_school where school_pro_id = #{schoolProId}
+	</select>
+	
+	<!-- 查询学校省 -->
+	<select id="getschoolProList" resultType="com.qinfenqi.mall.center.bean.SchoolProvince">
+		select * from qfq_core_school_province where is_enable = 1
+	</select>
+	
+	<!-- 根据学校名称查询学校 -->
+	<select id="searchSchool" resultType="com.qinfenqi.mall.center.bean.School" parameterType="com.qinfenqi.mall.center.bean.School">
+		select * from qfq_core_school where school_pro_id = #{schoolProId} and school_name like "%"#{schoolName}"%"
+	</select>
+	
+	<!-- 查询收货地址 -->
+	<select id="getAddressByUserId" parameterType="long" resultType="com.qinfenqi.mall.bean.ShopAddress" >
+		select * from qfq_core_shopaddress where user_id = #{userId} 
+	</select>
+	<!-- 新增收货地址 -->
+	<insert id="createAddress" parameterType="com.qinfenqi.mall.bean.ShopAddress">
+		insert into qfq_core_shopaddress
+				(user_id, receive_name, province_num, city_num, district_num, phone_num, address, is_default) 
+			values 
+				(#{userId}, #{receiveName}, #{provinceNum}, #{cityNum}, #{districtNum}, #{phoneNum}, #{address}, #{isDefault})
+	</insert>
+	
+	<!-- 更新收货地址 -->
+	<update id="updateAddress" parameterType="com.qinfenqi.mall.bean.ShopAddress">
+		update qfq_core_shopaddress  
+		<trim prefix="SET" suffixOverrides=","> 
+			<if test="receiveName != null and receiveName != '' ">
+				receive_name = #{receiveName},
+			</if>
+			<if test="phoneNum != null and phoneNum != '' ">
+				phone_num = #{phoneNum},
+		 	</if>
+		 	<if test="provinceNum != null and provinceNum != '' ">
+				province_num = #{provinceNum},
+		 	</if>
+		 	<if test="cityNum != null and cityNum != '' ">
+				city_num = #{cityNum},
+		 	</if>
+		 	<if test="districtNum != null and districtNum != '' ">
+				district_num = #{districtNum},
+		 	</if>
+		 	<if test="address != null and address != '' ">
+				address = #{address},
+			</if>
+		</trim>
+				where address_id = #{addressId}
+	</update>
+	<!-- 删除收货地址 -->
+	<delete id="deleteAddress" parameterType="long">
+		delete from qfq_core_shopaddress where address_id = #{addressId} 
+	</delete>
+	
+	<!-- 查询申请大使的推荐码和理由-->
+	<select id="getEmbassyByUserId" parameterType="long" resultType="com.qinfenqi.mall.bean.Embassy">
+		select * from qfq_core_embassy where user_id = #{userId} 
+	</select>
+	
+	<!-- 保存申请大使的资料 -->
+	<insert id="saveEmbassyApply" parameterType="com.qinfenqi.mall.bean.Embassy">
+		insert into qfq_core_embassy(user_id, true_name, phone, id_card, province, city, district,
+			school, school_zone, recommended_code, reason, create_time) 
+		values(#{userId}, #{trueName}, #{phone}, #{idCard}, #{province}, #{city}, #{district},
+			#{school}, #{schoolZone}, #{recommendedCode}, #{reason}, #{createTime});
+	</insert>
+	
+	<!-- 更新申请大使的资料 -->
+	<update id="updateEmbassyApply" parameterType="com.qinfenqi.mall.bean.Embassy">
+		update qfq_core_embassy  
+		<trim prefix="SET" suffixOverrides=","> 
+			<if test="recommendedCode != null and recommendedCode != '' ">
+				recommended_code = #{recommendedCode},
+			</if>
+			<if test="reason != null and reason != '' ">
+				reason = #{reason},
+		 	</if>
+		</trim>
+				where embassy_id = #{embassyId}
+	</update>
+	
+	<update id="updateMemberMail" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+      update qfq_core_member set email_vc = #{emailVc}, email = #{email}, is_email_oauth=#{isEmailOauth}  where user_id = #{userId}
+    </update>
+    <update id="updateMemberMailVc" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+      update qfq_core_member set email_vc = #{emailVc}, is_email_oauth=#{isEmailOauth}  where email = #{email}
+    </update>
+	
+	<update id="updateDefaultAddress" parameterType="com.qinfenqi.mall.bean.ShopAddress">
+        update qfq_core_shopaddress set is_default = #{isDefault} where address_id = #{addressId} 
+    </update>
+    <update id="updateAddressToNonDefault" parameterType="com.qinfenqi.mall.bean.ShopAddress">
+        update qfq_core_shopaddress set is_default = 2 where user_id = #{userId} 
+    </update>
+    
+	<!-- 查询验证码 -->
+	<select id="getValidCode" parameterType="com.qinfenqi.mall.member.query.MemberQuery" resultType="com.qinfenqi.mall.bean.MobileCode">
+		select * from qfq_mall_mobile_code where mobile = #{bankPhone}
+	</select>
+	<insert id="createBandMobileCode" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		replace into qfq_mall_mobile_code(mobile, code) values(#{bankPhone}, #{code});
+	</insert>
+	
+	<!-- 插入身份学籍验证信息 -->
+	<update id="insertIdOauthInfo" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set is_id_oauth = #{isIdOauth}, 
+			true_name = #{trueName,jdbcType=VARCHAR}, 
+			id_card = #{idCard,jdbcType=VARCHAR}, 
+			id_card_address = #{idCardAddress,jdbcType=VARCHAR}, 
+			school = #{school,jdbcType=VARCHAR},
+			school_bedroom = #{schoolBedroom,jdbcType=VARCHAR},
+		 	graduate_year = #{graduateYear,jdbcType=VARCHAR}, 
+			graduate_month = #{graduateMonth,jdbcType=VARCHAR},
+			certification_type = #{certificationType,jdbcType=INTEGER},
+			xx_account = #{xxAccount,jdbcType=VARCHAR}, 
+			xx_password = #{xxPassword,jdbcType=VARCHAR},
+			jw_account = #{jwAccount,jdbcType=VARCHAR},
+			jw_password = #{jwPassword,jdbcType=VARCHAR},
+			jw_url = #{jwUrl,jdbcType=VARCHAR},
+			province = #{province,jdbcType=VARCHAR},
+			city = #{city,jdbcType=VARCHAR},
+			district = #{district,jdbcType=VARCHAR},
+			audit_status = #{auditStatus}
+		where member_id = #{memberId}
+	</update>
+	
+	<!-- 插入联系方式验证信息 -->
+	<update id="insertContactOauthInfo" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set is_contact_oauth = #{isContactOauth}, 
+			QQ = #{QQ,jdbcType=VARCHAR}, 
+			WEIXIN = #{weiXin,jdbcType=VARCHAR}, 
+			friend_name = #{friendName,jdbcType=VARCHAR},
+		 	friend_phone = #{friendPhone,jdbcType=VARCHAR},
+		 	friend_phone_address = #{friendPhoneAddress,jdbcType=VARCHAR},
+		 	audit_status = #{auditStatus}
+		where member_id = #{memberId}
+	</update>
+	
+	<!-- 插入银行认证验证信息 -->
+	<update id="insertBankOauthInfo" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set is_bkcard_oauth = #{isBkcardOauth}, 
+			bank_name = #{bankName,jdbcType=VARCHAR}, 
+			bank_card = #{bankCard,jdbcType=VARCHAR}, 
+			bank_phone = #{bankPhone,jdbcType=VARCHAR},
+			bank_phone_address = #{bankPhoneAddress,jdbcType=VARCHAR},
+		 	bank_customer_name = #{bankCustomerName,jdbcType=VARCHAR},
+		 	bank_customer_card = #{bankCustomerCard,jdbcType=VARCHAR},
+		 	audit_status = #{auditStatus}
+		where member_id = #{memberId}
+	</update>
+	
+    <!-- 插入紧急联系方式验证信息 -->
+	<update id="insertEmergencyContactOauthInfo" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		update qfq_core_member set is_ecp_oauth = #{isEcpOauth}, 
+			parent_name = #{parentName,jdbcType=VARCHAR}, 
+			parent_phone = #{parentPhone,jdbcType=VARCHAR}, 
+			parent_phone_address = #{parentPhoneAddress,jdbcType=VARCHAR}, 
+			mother_name = #{motherName,jdbcType=VARCHAR}, 
+			mother_phone = #{motherPhone,jdbcType=VARCHAR},
+			mother_phone_address = #{motherPhoneAddress,jdbcType=VARCHAR},
+			audit_status = #{auditStatus}
+		where member_id = #{memberId}
+	</update>
+	
+	<update id="insertIdCardsOauth" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+        update qfq_core_member 
+        	set is_card_oauth = #{isCardOauth}, 
+        	id_card_photo = #{idCardPhoto},
+        	student_photo = #{studentPhoto}, 
+        	statement_photo = #{statementPhoto},
+        	others_photo = #{othersPhoto},
+        	audit_status = #{auditStatus}
+        where user_id = #{userId} 
+    </update>
+    
+    <update id="insertBkflowOauth" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+        update qfq_core_member 
+        	set is_bkflow_oauth = #{isBkflowOauth}, 
+        	bkflow_photo = #{bkflowPhoto},
+        	bkflow_price = #{bkflowPrice},
+        	audit_status = #{auditStatus}
+        where user_id = #{userId} 
+    </update>
+    
+    
+    <insert id="createMobileCode" parameterType="com.qinfenqi.mall.member.query.MemberQuery">
+		replace into qfq_mall_mobile_code(mobile, code) values(#{bankPhone}, #{code})
+	</insert>
+	
+</mapper>

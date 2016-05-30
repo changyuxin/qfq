@@ -1,0 +1,51 @@
+@charset "utf-8";
+/* CSS Document */
+.top-logo {width:1200px;margin:0 auto;margin-bottom:80px;}
+.qlogo {width: 300px;height: 50px;display: block;}
+img {border:none;}
+/*中间样式*/
+.apply-all{width: 970px;margin: 0 auto;float:left;}
+.apply-wrap {width: 970px;border: 1px solid #dfdfdf;margin-left:17px;}
+.apply-tt {height: 40px;background-color: #f5f5f5;border-bottom: 1px solid #dfdfdf;}
+.apply-tt-p {text-align:center;width:970px;font-size:18px;padding-top:5px;}
+select {height:25px;margin-right:10px;margin-left:1px;margin-bottom:4px;}
+input {margin-right:10px;margin-left:5px;height:25px;padding-left:5px;width:130px;}
+.input_w_80 {width:80px;}
+label {display:inline-block;width:185px;text-align:right;}
+.white-collar-div {border-bottom:1px dashed #999;padding-bottom:20px;}
+.p_mian {min-height:35px;line-height:30px;padding-left:30px;}
+.p_mian_title {padding-left:30px;font-size:16px;padding-top:20px;padding-bottom:5px;color:#2782db;}
+.white-collar-file {border:1px solid #999;padding-left:0px !important;width:220px;}
+.white-collar-other {margin-bottom:10px;}
+.white-collar-other-div {width:220px;margin-left:220px;margin-top:-30px;}
+.add-btn {padding-left:10px;padding-right:10px;padding-left: 10px;padding-right: 10px !important;width: 75px !important;margin-left: -1px !important;}
+.annotation {padding-top:10px;padding-bottom:10px;padding-left:50px;}
+.annotation-p {color:#F00;min-height:17px;}
+.annotation-p-title {margin-left:40px;margin-top:-17px;color:#F00}
+.annotation-p-main {margin-left:40px;color:#F00}
+.btn-submit-div {margin: 20px 0;text-align:center;margin-bottom:70px;}
+.btn-submit-a {color:#fff !important;background-color:#ff3100;padding:5px 25px;font-size:14px;border-radius:5px;}
+.error-div {background-color: #FFDFE2;min-height: 28px;width: 598px;position: relative;margin-top: -30px;margin-left: 220px;border:1px solid #F00;border-radius:5px;}
+.error-span {font-size:14px;color:#000;line-height:30px;padding-left:10px;padding-right:10px;}
+.area-choose {padding-top:20px;}
+
+/*left*/
+.mu-menu{ width: 208px;height: 688px;background: #fff;border: 1px solid #e5e5e5;float: left;}
+.mu-menu-div {background-color:#ff3100;}
+.mu-menu-a {color:#FFF!important; font-size:16px; font-weight:600;}
+.mu-menu dd ,.mu-menu dt{ padding:0 29px;}
+.mu-menu dt{ height: 51px;line-height: 51px;margin-bottom: 15px;border-bottom: 1px solid #e5e5e5;}
+.mu-menu dt i{width:0;height: 0;}
+.mu-menu dd{line-height: 30px;}
+.mu-menu dd a{font-weight: bold;color: #333;}
+.mu-menu dd a:hover,.mu-menu dd li:hover{ color: #ff3100;}
+.mu-menu dd li{padding-left: 5px;}
+.mu-menu dd i{display: inline-block; width: 4px; height: 4px; background: #2782db; margin-right: 20px; position: relative; top: -3px;}
+.mu-menu ul{ text-indent: 24px; }
+.mu-menu dd ul a{font-weight: 400; color: #666;}
+.mu-menu dd ul a.active{color: #ff3100;}
+.mu-ctxt {margin-left: 230px;}
+
+.main-wrap{ height: auto; position: relative;overflow: hidden;width:1200px;margin: 15px auto;}
+.main-title  {margin-left:60px;}
+.main-title a {margin:0px 20px;float: left;line-height: 68px;display:block;}

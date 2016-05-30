@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		   http://www.springframework.org/schema/context
+		   http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		   http://www.springframework.org/schema/aop 
+		   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	default-autowire="byName">
+
+	<!-- 更新快递状态 -->
+ 	<bean id="jobUpdateOrderStatus"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="orderQuartzService" />
+		<property name="targetMethod" value="updateOrderStatus" />
+	</bean> 
+	<bean id="updateOrderStatus"
+		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="jobUpdateOrderStatus" />
+		<property name="startDelay" value="10000" />
+		<property name="repeatInterval" value="600000" />
+	</bean>
+	
+	<!-- 更新会员信用额度 -->
+ 	<bean id="jobUpdateMemberStatus"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="memberQuartzService" />
+		<property name="targetMethod" value="updateMemberCredit" />
+	</bean> 
+	<bean id="updateMemberCredit"
+		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="jobUpdateMemberStatus" />
+		<property name="startDelay" value="10000" />
+		<property name="repeatInterval" value="864000000" />
+	</bean>
+
+	<!-- 更新订单滞纳金 -->
+	<bean id="jobUpdateBillFines"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="billQuartzService" />
+		<property name="targetMethod" value="updateBillFines" />
+	</bean>
+	<bean id="updateBillFines"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobUpdateBillFines" />
+		<property name="cronExpression" value="0 10 0 * * ?" />
+	</bean>
+
+	<!-- 帐单短信通知 -->
+	<bean id="billSMSNotifyJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="billQuartzService" />
+		<property name="targetMethod" value="billSMSNotify" />
+	</bean>
+	<bean id="billSMSNotifyJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="billSMSNotifyJob" />
+		<property name="cronExpression" value="0 0 10 * * ?" />
+	</bean>
+
+	<bean id="startQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>	
+				<ref bean="updateMemberCredit" />			
+				<ref bean="updateOrderStatus" />
+				<ref bean="updateBillFines" />
+				<ref bean="billSMSNotifyJobTrigger" />				
+			</list>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.product.dao.ProductDao">
+	
+	<!-- 获取商品列表 -->
+	<select id="getProductList" resultType="com.qinfenqi.mall.product.query.ProductQuery" >
+		select p.*, c1.category_name as pcategory_name, c.category_name, b.brand_name  from qfq_mall_product p, qfq_mall_category c, qfq_mall_category c1, qfq_mall_brand b where 
+			p.category_id = c.category_id and p.pcategory_id = c1.category_id and p.brand_id = b.brand_id
+	</select>
+	<!-- 获取推荐商品列表 -->
+	<select id="getRecommends" resultType="com.qinfenqi.mall.product.query.ProductQuery" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		select p.*, c1.category_name as pcategory_name, c.category_name, b.brand_name  from qfq_mall_product p, qfq_mall_category c, qfq_mall_category c1, qfq_mall_brand b where 
+			p.category_id = c.category_id and p.pcategory_id = c1.category_id and p.brand_id = b.brand_id and p.category_id = #{categoryId} and p.is_recommend = 1
+	</select>
+	
+	<!-- 根据colorId, specId, productPid查询产品ID -->
+	<select id="queryProduct" resultType="com.qinfenqi.mall.product.query.ProductQuery" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		select p.* from qfq_mall_product p where p.color_id = #{colorId} and p.spec_id = #{specId} and p.product_pid = ${productPid}
+	</select>
+	
+	<!-- 根据商品ID获取商品 -->
+	<select id="getProductDetailById" resultType="com.qinfenqi.mall.product.query.ProductQuery" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		select p.*, c1.category_name as pcategory_name, c.category_name, b.brand_name  from qfq_mall_product p, qfq_mall_category c, qfq_mall_category c1, qfq_mall_brand b where 
+			p.category_id = c.category_id and p.pcategory_id = c1.category_id and p.brand_id = b.brand_id and p.product_id = #{productId}
+	</select>
+	
+	<!-- 根据分类ID获取商品列表 -->
+	<select id="getProductListByCategoryId" resultType="com.qinfenqi.mall.product.query.ProductQuery" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		select p.*, c1.category_name as pcategory_name, c.category_name, b.brand_name  from qfq_mall_product p, qfq_mall_category c, qfq_mall_category c1, qfq_mall_brand b where 
+			p.category_id = c.category_id and p.pcategory_id = c1.category_id and p.brand_id = b.brand_id and p.on_sale = 1 and p.category_id = #{categoryId}
+		<if test="isIndex == 1">  
+	         and is_index = #{isIndex}  
+        </if>
+        order by p.index_order desc
+	</select>
+	
+	<!-- 添加新产品 -->
+	<insert id="addProduct" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		insert into qfq_mall_product (product_name, product_pid, pcategory_id, brand_id, category_id, market_price, sale_price, product_code, is_index, is_recommend,
+				cost_price, stock_count, alert_inventory, on_sale, list_img, detail_img, exended_price, exended_measure, color_id, spec_id)
+			values (#{productName}, #{productPid}, #{pcategoryId}, #{brandId}, #{categoryId}, #{marketPrice}, #{salePrice}, #{productCode}, #{isIndex}, #{isRecommend},
+				#{costPrice}, #{stockCount}, #{alertInventory}, #{onSale}, #{listImg}, #{detailImg}, #{exendedPrice}, #{exendedMeasure}, #{colorId}, #{specId})
+	</insert>
+	
+	<!-- 更新商品信息 -->
+	<update id="editProduct" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		update qfq_mall_product set 
+			product_name = #{productName}, 
+			category_id = #{categoryId}, 
+			product_pid = #{productPid}, 
+			pcategory_id = #{pcategoryId},
+			color_id = #{colorId},
+			spec_id = #{specId},
+			is_index = #{isIndex},
+			is_recommend = #{isRecommend},
+			product_code = #{productCode},
+			brand_id = #{brandId},
+			on_sale = #{onSale},
+			market_price = #{marketPrice},
+			sale_price = #{salePrice},
+			cost_price = #{costPrice},
+			stock_count = #{stockCount},
+			exended_price = #{exendedPrice},
+			exended_measure = #{exendedMeasure},
+			detail_img = #{detailImg},
+			index_order = #{indexOrder}
+		where product_id = #{productId}
+	</update>
+	
+	<update id="editProductCover" parameterType="com.qinfenqi.mall.product.query.ProductQuery">
+		update qfq_mall_product set cover_img = #{coverImg}, product_imgs = #{productImgs} where product_id = #{productId}
+	</update>
+	
+	<!-- 删除商品 -->
+	<delete id="deleteProduct" parameterType="int">
+		delete from qfq_mall_product where product_id = #{productId}
+	</delete>
+	
+	<!-- 获根据ID取商品 -->
+	<select id="getProductById" resultType="com.qinfenqi.mall.product.query.ProductQuery"  parameterType="int" >
+		select * from qfq_mall_product where product_id = #{productId}
+	</select>
+	
+	<select id="getProdsByBrandId" resultType="com.qinfenqi.mall.product.bean.ProductList" parameterType="int">
+		select * from qfq_mall_product_list where brand_id = #{brandId}
+	</select>
+	
+	<select id="getColors" resultType="com.qinfenqi.mall.product.bean.ProductColor">
+		select * from qfq_mall_product_color
+	</select>
+	
+	<select id="getSpecs" resultType="com.qinfenqi.mall.product.bean.ProductSpec">
+		select * from qfq_mall_product_spec
+	</select>
+	
+	<select id="getProductColors" resultType="com.qinfenqi.mall.product.bean.ProductColor" parameterType="int">
+		select distinct c.color_id, c.color_name from qfq_mall_product p, qfq_mall_product_color c where p.color_id = c.color_id and on_sale = 1 and p.product_pid = #{productPid}
+	</select>
+	
+	<select id="getProductSpecs" resultType="com.qinfenqi.mall.product.bean.ProductSpec" parameterType="int">
+		select distinct s.spec_id, s.spec_desc from qfq_mall_product p, qfq_mall_product_spec s where p.spec_id = s.spec_id and on_sale = 1 and p.product_pid = #{productPid}
+	</select>
+	
+	<!-- 获取产品编码 -->
+	<select id="queryProductCode" resultType="int">
+		select seq('product')
+	</select>
+	
+	<!--获取产品列表 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and |or"> 
+			<if test="categoryId > 1">
+				T.category_Id  = #{categoryId}
+	 		</if> 
+			<if test="brandId != 0">
+				AND T.brand_id  = #{brandId}
+	 		</if>
+			<if test="brandId != 0">
+				AND T.brand_id  = #{brandId}
+	 		</if>
+	 		<if test="exendedPrice != 0">
+				AND T.exended_price = #{exendedPrice}
+	 		</if>
+	 		<if test="keyword != null and keyword != ''">
+				AND T.product_name like #{productName}
+	 		</if>
+	 		<if test="minPrice != null and minPrice != ''">
+				<![CDATA[ AND  T.sale_price >= #{minPrice}]]>  
+	 		</if>
+	 		<if test="maxPrice != null and maxPrice != ''">
+	 			<![CDATA[ AND  T.sale_price <= #{maxPrice}]]> 
+	 		</if>
+	 		<if test="productCode != 0">
+				AND T.product_code = #{productCode}
+	 		</if> 
+	 		<if test="onSale != 0">
+				AND T.on_sale = #{onSale}
+	 		</if>
+	 		<if test="isIndex != 0">
+				AND T.is_index = #{isIndex}
+	 		</if>
+	 		<if test="isRecommend != 0">
+				AND T.is_recommend = #{isRecommend}
+	 		</if>
+	 		<if test="pcategoryId != 0">
+				AND T.pcategory_Id = #{pcategoryId}
+	 		</if>
+	 		<if test="pcategoryId != 0">
+				AND T.pcategory_Id = #{pcategoryId}
+	 		</if>
+	 		<if test="pcategoryId == 0 and categoryId == 1">
+				AND T.pcategory_Id  = 1
+	 		</if>
+	 		and T.category_id = U.category_id
+	 		and T.brand_id= P.brand_id
+		</trim>
+	</sql>
+	<select id="getProductListByCon" parameterType="com.qinfenqi.mall.product.query.ProductQuery" resultType="com.qinfenqi.mall.product.query.ProductQuery">
+		select T.*,U.category_name,P.brand_name from qfq_mall_product T,qfq_mall_category U,qfq_mall_brand P <include refid="sqlFilter"/>  ORDER BY ${orderField} ${orderType} limit #{startNo}, #{pageSize}
+	</select>
+	
+	<!--获取产品总数 -->
+	<select id="getProductCount" parameterType="com.qinfenqi.mall.product.query.ProductQuery" resultType="int">
+		select count(1) from qfq_mall_product T,qfq_mall_category U,qfq_mall_brand P <include refid="sqlFilter"/> 
+	</select>
+</mapper>

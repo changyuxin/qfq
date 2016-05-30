@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.bill.dao.BillDao">
+
+	<!-- 批量添加订单的帐单 -->
+	<insert id="createBills" parameterType="com.qinfenqi.mall.bill.bean.Bill">
+		insert into qfq_mall_bill (user_id, order_id, current_month, months, principal, service_pay, financial_pay, month_pay, payment_date)
+			values 
+		<foreach collection="list" item="item" index="index" separator="," >  
+			(#{item.userId}, #{item.orderId}, #{item.currentMonth}, #{item.months}, #{item.principal}, #{item.servicePay}, #{item.financialPay}, #{item.monthPay}, #{item.paymentDate})  
+		</foreach>
+	</insert>
+	<!-- 获取帐号列表 -->
+	<select id="getBills" parameterType="com.qinfenqi.mall.order.query.OrderQuery" resultType="com.qinfenqi.mall.bill.query.BillQuery">
+		select * from qfq_mall_bill where order_id = #{orderId} order by payment_date asc
+	</select>
+	
+	<!-- 根据ID获取帐单 -->
+	<select id="getBillById" parameterType="com.qinfenqi.mall.bill.query.BillQuery" resultType="com.qinfenqi.mall.bill.query.BillQuery">
+		select o.order_code, o.deliver_name, o.receive_name, o.product_name, o.create_time as order_time, b.* from qfq_mall_bill b, qfq_mall_order o where b.order_id = o.order_id and bill_id = #{billId}
+	</select>
+	
+	<!-- 更新帐单状态 -->
+	<update id="updateBillStatus" parameterType="com.qinfenqi.mall.bill.query.BillQuery">
+		update qfq_mall_bill set 
+			payment_status = #{paymentStatus},
+			actual_payment_date = #{actualPaymentDate}
+		 	where bill_id = #{billId}
+	</update>
+	
+	<!-- 删除帐单 -->
+	<delete id="deleteBills" parameterType="com.qinfenqi.mall.order.query.OrderQuery"> 
+		delete from qfq_mall_bill where order_id = #{orderId}
+	</delete>
+	
+	<!-- 获得超期未付款或者已经延期的订单 -->
+	<select id="getOverdueBills" parameterType="com.qinfenqi.mall.bill.query.BillQuery" resultType="com.qinfenqi.mall.bill.query.BillQuery">
+		select * from qfq_mall_bill b where <![CDATA[b.payment_date < #{currentDay}]]> and b.payment_status != 2
+	</select>
+	
+	<!-- 更新滞纳金 -->
+	<update id="updateBillLatefines" parameterType="com.qinfenqi.mall.bill.query.BillQuery">
+		update qfq_mall_bill set 
+			late_fines = #{lateFines},
+			late_days = #{lateDays},
+			payment_status = 3
+		 	where bill_id = #{billId}
+	</update>
+	
+	<!-- 更新帐单催收结果 -->
+	<update id="updateAuditOpinion" parameterType="com.qinfenqi.mall.bill.query.BillQuery">
+		update qfq_mall_bill set audit_opinion = #{auditOpinion} where bill_id = #{billId}
+	</update>
+	
+	<!--查询订单  
+	<select id="getBillList" parameterType="com.qinfenqi.mall.bill.query.BillQuery" resultMap="billQueryMap" >
+		select * from qfq_mall_bill ORDER BY ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>-->
+	
+	<!-- 按照订单ID查询订单 -->
+	<select id="getBillListByOrderId" parameterType="com.qinfenqi.mall.bill.query.BillQuery" resultType="com.qinfenqi.mall.bill.query.BillQuery">
+		select u.username, u.user_style, c.product_name, c.belong as trueName, b.* from qfq_mall_bill b, qfq_core_users u, qfq_mall_contract c, qfq_mall_order o
+			where b.user_id = u.user_id and c.user_id = b.user_id and b.order_id = o.order_id and c.order_id = o.order_id
+				and b.user_id = #{userId} and b.order_id = #{orderId}
+	</select>
+	<!--查询订单  -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+				b.user_id = u.user_id and c.user_id = b.user_id and b.order_id = o.order_id and (o.order_status = 5 || o.order_status = 7) and c.order_id = o.order_id
+	 		<if test="trueName != null and trueName != ''">
+				and c.belong like "%"#{trueName}"%"
+	 		</if>
+	 		<if test="userId > 0">
+				and b.user_id = #{userId}
+	 		</if>
+	 		<if test="orderId > 0">
+				and b.order_id = #{orderId}
+	 		</if>
+	 		<if test="paymentStatus > 0">
+				and b.payment_status = #{paymentStatus}
+	 		</if> 
+	 		<if test="indexstatus != null and indexstatus != ''">
+		 		<if test="indexstatus == 0">
+					and <![CDATA[left(b.payment_date, 10) = left(#{currentDay}, 10)]]>
+		 		</if> 
+				<if test="indexstatus == 1">
+					and <![CDATA[b.payment_date < left(#{currentDay}, 10)]]>
+					and <![CDATA[b.payment_status = 3 ]]>
+		 		</if>
+				<if test="indexstatus == 2">
+					and <![CDATA[left(b.payment_date, 10) between #{nextDay} and #{thirdDay}]]>
+		 		</if>
+		 		<if test="indexstatus == 3">
+		 			and <![CDATA[left(b.actual_payment_date, 10) between #{beforeYesterday} and #{currentDay}]]>
+		 		</if>
+		 	</if>
+		</trim>
+	</sql>		
+    <select id="getBillList" parameterType="com.qinfenqi.mall.bill.query.BillQuery" resultType="com.qinfenqi.mall.bill.query.BillQuery">
+		select u.username, u.user_style, c.product_name, c.belong as trueName, b.* from qfq_mall_bill b, qfq_core_users u, qfq_mall_contract c, qfq_mall_order o 
+				<include refid="sqlFilter"/> 
+			<if test="indexstatus != 3">
+				order by b.payment_date desc
+			</if>
+			<if test="indexstatus == 3">
+				order by b.actual_payment_date desc
+			</if>
+			<if test="isPage">
+				limit #{startNo}, #{pageSize}
+			</if>
+			
+	</select>
+	<!--查询订单数量  -->
+	<select id="getBillCount" parameterType="com.qinfenqi.mall.bill.query.BillQuery" resultType="int" >
+		select count(1) from qfq_mall_bill b, qfq_core_users u, qfq_mall_contract c, qfq_mall_order o 
+		<include refid="sqlFilter"/>
+	</select>
+	
+	
+</mapper>

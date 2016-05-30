@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.embassy.dao.EmbassyDao">
+	<!-- 查询大使 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			<if test="trueName != null and trueName != ''">
+				true_name = #{trueName}
+	 		</if> 
+	 		<if test="phone != null and phone != ''">
+				and phone = #{phone}
+	 		</if>
+	 		<if test="province != null and province != ''">
+				and province = #{province}
+	 		</if>  
+	 		<if test="city != null and city != ''">
+				and city = #{city}
+	 		</if> 
+	 		<if test="status > 0">
+				and status = #{status}
+	 		</if> 
+		</trim>
+	</sql>
+	<select id="getEmbassyList" resultType="com.qinfenqi.mall.embassy.query.EmbassyQuery" parameterType="com.qinfenqi.mall.embassy.query.EmbassyQuery">
+		select * from qfq_core_embassy <include refid="sqlFilter"/> order by ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	<select id="getEmbassyCount" resultType="int" parameterType="com.qinfenqi.mall.embassy.query.EmbassyQuery">
+		select count(1) from qfq_core_embassy <include refid="sqlFilter"/>
+	</select>
+	
+	<!-- 添加大使 -->
+	<insert id="createEmbassy" parameterType="com.qinfenqi.mall.embassy.query.EmbassyQuery">
+		insert into qfq_core_embassy 
+			(serial_num, true_name, phone, id_card, province, city, district, school, create_time, status, sex, bkcard_name, bkcard_num) 
+			values 
+			(#{serialNum}, #{trueName}, #{phone}, #{idCard}, #{province}, #{city}, #{district}, #{school}, #{createTime}, #{status}, #{sex}, #{bkcardName}, #{bkcardNum});
+	</insert>
+	
+	<!-- 编辑大使 -->
+	<update id="modifyEmbassy" parameterType="com.qinfenqi.mall.embassy.query.EmbassyQuery">
+		update qfq_core_embassy 
+		<set>
+			<if test="idCard != null and idCard != ''">   
+				id_card = #{idCard},
+	    	</if>
+			<if test="sex > 0">   
+				sex = #{sex},
+	    	</if>
+			<if test="province != null and province != ''">   
+				province = #{province},
+	    	</if> 
+			<if test="city != null and city != ''">   
+				city = #{city},
+	    	</if> 
+			<if test="district != null and district != ''">   
+				district = #{district},
+	    	</if> 
+			<if test="school != null and school != ''">   
+				school = #{school},
+	    	</if> 
+			<if test="serialNum != null and serialNum != ''">   
+				serial_num = #{serialNum},
+	    	</if>   
+			<if test="bkcardName != null and bkcardName != ''">   
+				bkcard_name = #{bkcardName},
+	    	</if>   
+			<if test="bkcardNum != null and bkcardNum != ''">   
+				bkcard_num = #{bkcardNum},
+	    	</if>   
+			<if test="phone != null">   
+				phone = #{phone},
+	    	</if>
+	  		<if test="status > 0">
+				status = #{status},
+	 		</if>
+		</set>   
+		where embassy_id = #{embassyId}
+		
+	</update>
+	
+	<!-- 根据Id查询大使 -->
+	<select id="getEmbassyById" resultType="com.qinfenqi.mall.embassy.query.EmbassyQuery" parameterType="long">
+		select * from qfq_core_embassy where embassy_id = #{embassyId}
+	</select>
+	
+	<!-- 根据学校查询大使列表 -->
+	
+	<select id="getEmbassyListBySchool" resultType="com.qinfenqi.mall.embassy.query.EmbassyQuery" parameterType="com.qinfenqi.mall.embassy.query.EmbassyQuery">
+		select * from qfq_core_embassy where school = #{school}
+	</select>
+	
+	<!-- 根据状态统计大使 -->
+	<select id="getEmbassyCounts" resultType="com.qinfenqi.mall.bean.Count">
+		select status as name, count(*) as total from qfq_core_embassy group by status
+	</select>
+</mapper>

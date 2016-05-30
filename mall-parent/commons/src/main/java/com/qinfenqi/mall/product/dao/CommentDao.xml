@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.product.dao.CommentDao">
+
+	<!-- 获取评论列表 -->
+	<select id="getCommentList" resultType="com.qinfenqi.mall.product.bean.Comment" >
+		select 
+			p.*  from qfq_mall_comment p
+		where 
+			p.product_id = #{productId}
+	</select>
+	<select id="checkCommentList" resultType="com.qinfenqi.mall.product.bean.Comment" >
+		select 
+			p.*  from qfq_mall_comment p
+		where 
+			p.product_id = #{productId} and p.username =  #{username}
+	</select>
+	<insert id="addComment" parameterType="com.qinfenqi.mall.product.bean.Comment">
+		insert into qfq_mall_comment 
+			(comment_id,   username,    showname,    product_id,   content,    pic1url,    pic2url,    pic3url,    pic4url,    pic5url,    comment_date,     satisify,    address)
+		values 
+			(#{commentId}, #{username}, #{showname}, #{productId}, #{content}, #{pic1Url}, #{pic2Url}, #{pic3Url}, #{pic4Url}, #{pic5Url}, #{commentDate}, #{satisify}, #{address})
+	</insert>
+	<update id="editCommentCover" parameterType="com.qinfenqi.mall.product.bean.Comment">
+		update qfq_mall_comment set pic1url = #{pic1Url}, pic2url = #{pic2Url} where comment_id = #{commentId}
+	</update>
+</mapper>

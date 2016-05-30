@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.product.dao.BrandDao">
+	<!-- 用户登录 -->
+	<select id="getBrandList" resultType="com.qinfenqi.mall.product.bean.Brand">
+		select * from qfq_mall_brand t
+	</select>
+
+</mapper>

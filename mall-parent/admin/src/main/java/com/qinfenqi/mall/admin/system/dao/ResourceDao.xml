@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.admin.system.dao.ResourceDao">
+	
+	<!-- 添加资源 -->
+	<insert id="createResource" useGeneratedKeys="true" keyProperty="resourceId"  parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		insert into qfq_core_resource
+			(parent_id, resource_name, url, is_common, is_nav, is_button, nav_order, is_log) 
+				values
+			(#{parentId}, #{resourceName}, #{url}, #{isCommon}, #{isNav}, #{isButton}, #{navOrder}, #{isLog})
+	</insert>
+	
+	<!-- 根据ID获取资源 -->
+	<select id="getResourceById" parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery" resultType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		select * from qfq_core_resource where resource_id = #{resourceId}
+	</select>
+	
+	<!-- 启用、停用资源 -->
+	<update id="enableResource" parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		update qfq_core_resource set 
+			is_enable = #{isEnable}
+		where resource_id = #{resourceId}
+	</update>
+	
+	<!-- 根据ID删除资源 -->
+	<delete id="deleteResource" parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		delete from qfq_core_resource where resource_id = #{resourceId}
+	</delete>
+	
+	<!-- 编辑资源 -->
+	<update id="modifyResource" parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		update qfq_core_resource set 
+			parent_id = #{parentId},
+			resource_name = #{resourceName},
+			url = #{url},
+			is_common = #{isCommon},
+			is_nav = #{isNav},
+			is_button = #{isButton}
+		where resource_id = #{resourceId}
+	</update>
+	
+	<!-- 根据ids查询菜单 -->
+	<select id="getResourceListByIds" resultType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		select * from qfq_core_resource where resource_id in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		and is_enable = 1
+	</select>
+
+	<!-- 查询所有资源 -->
+	<select id="getAllResourceList" resultType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		select * from qfq_core_resource;
+	</select>
+	
+	<!-- 资源查询条件 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and |or">  
+	        <if test="resourceName != null and resourceName != ''">  
+				and r.resource_name like "%"#{resourceName}"%"
+			</if>
+	        <if test="parentId != null and parentId > 0">  
+	            and r.parent_id = #{parentId}
+	        </if> 
+	        <if test="url != null and url != ''">  
+				and r.url  like "%"#{url}"%"
+			</if>
+	        <if test="isCommon != null and isCommon > 0">  
+	            and r.is_common = #{isCommon}
+	        </if>
+			<if test="isNav != null and isNav > 0">  
+	            and r.is_nav = #{isNav}
+			</if>
+			<if test="isButton != null and isButton > 0">  
+	            and r.is_button = #{isButton}
+			</if>
+	    </trim>
+	</sql>
+	
+	<!-- 根据条件查询资源 -->
+	<select id="getResourceList" resultType="com.qinfenqi.mall.admin.system.query.ResourceQuery" parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		select r.* from qfq_core_resource r <include refid="sqlFilter"/> 
+		<if test="isPage">
+			limit #{startNo}, #{pageSize}
+		</if>
+	</select>
+	<!-- 根据条件查询资源 -->
+	<select id="getResourceCount" resultType="int" parameterType="com.qinfenqi.mall.admin.system.query.ResourceQuery">
+		select count(1) from qfq_core_resource r <include refid="sqlFilter"/>
+	</select>
+</mapper>

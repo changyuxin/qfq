@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.collar.dao.CollarDao">
+
+	<!-- 更新collar表 -->
+	<update id="updateCollarInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			true_name = #{trueName},sex = #{sex},
+			id_card = #{idCard},
+			province = #{province},city = #{city},
+			district = #{district},street = #{street},
+			neighborhood = #{neighborhood},building = #{building},
+			unit = #{unit},floor = #{floor},room = #{room},
+			company_name = #{companyName},company_type = #{companyType},
+			department = #{department},post = #{post},
+			company_address = #{companyAddress},company_contact_person = #{companyContactPerson},
+			company_fixed_telephone = #{companyfixedTelephone},company_phone = #{companyPhone},
+			mail_province = #{mailProvince},mail_city = #{mailCity},
+			mail_district = #{mailDistrict},mail_street = #{mailStreet},
+			mail_neighborhood = #{mailNeighborhood},mail_building = #{mailBuilding},
+			mail_unit = #{mailUnit},mail_floor = #{mailFloor},mail_room = #{mailRoom},
+			mail_phone = #{mailPhone},mail_qq = #{mailQQ},
+			mail_weixin = #{mailWeixin},mail = #{mail},
+			father_name= #{fatherName},father_phone = #{fatherPhone},
+			mother_name = #{motherName},mother_phone = #{motherPhone},
+			wife_name = #{wifeName},wife_phone = #{wifePhone},
+			friend_name = #{friendName},friend_phone = #{friendPhone},
+			education_level = #{educationLevel},family_income = #{familyIncome},
+			working_month = #{workingMonth},working_year_now = #{workingYearNow},
+			month_income = #{monthIncome},month_spends = #{monthSpends},
+			social_security_status = #{socialSecurityStatus},housing_status = #{housingStatus},
+			guarantee_name = #{guaranteeName},guarantee_phone= #{guaranteePhone},
+			bank_card = #{bankCard}, bank_card_name = #{bankCardName},
+			bank_card_id = #{bankCardId},upload_card_detail = #{uploadCardDetail},
+			upload_flow_detail = #{uploadFlowDetail},upload_other_detail = #{uploadOtherDetail},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新审核状态及意见 -->
+	<update id="updateAudit" parameterType="com.qinfenqi.mall.collar.query.CollarQuery">
+		update qfq_core_collar
+		<set>
+			credit_limit = #{creditLimit},
+	    	<if test="auditStatus > 0">   
+	 			audit_status = #{auditStatus},
+	     	</if>   
+	       	<if test="auditOpinion != null">
+				audit_opinion  = #{auditOpinion},
+	 		</if>
+	     </set> 
+		where collar_id = #{collarId}
+	</update>
+	
+	<!-- 更新白领信用 -->
+	<update id="updateCreditLimit" parameterType="com.qinfenqi.mall.collar.query.CollarQuery">
+		update qfq_core_collar set credit_limit = #{creditLimit}, used_credit_limit  = #{usedCreditLimit} where collar_id = #{collarId}
+	</update>
+	
+	
+	<!-- 创建白领基本信息-->
+	<insert id="createCollar"  useGeneratedKeys="true" keyProperty="collar_id"  parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		insert into qfq_core_collar(user_id, phone, create_time) values(#{userId}, #{phone}, #{createTime});
+	</insert>
+	
+	<!-- 删除白领 -->
+	<delete id="deleteCollar" parameterType="long">
+		delete from qfq_core_collar where user_id = #{userId}
+	</delete>
+	
+	<!-- 根据用户ID查询白领 -->
+	<select id="getCollarByUserId" resultType="com.qinfenqi.mall.collar.query.CollarQuery" parameterType="long">
+		select * from qfq_core_collar where user_id = #{userId}
+	</select>
+	
+	<!-- 根据Id查询白领 -->
+	<sql id="collarFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+	 		<if test="collarId > 0">
+				collar_id = #{collarId}
+	 		</if>
+	 		<if test="userId > 0">
+				user_id = #{userId}
+	 		</if>
+		</trim>
+	</sql>
+	<select id="getCollarById" resultType="com.qinfenqi.mall.collar.query.CollarQuery" parameterType="com.qinfenqi.mall.collar.query.CollarQuery">
+		select * from qfq_core_collar <include refid="collarFilter"/>
+	</select>
+	
+	
+	
+	<!-- 查询白领会员列表 -->
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+				c.user_id = u.user_id
+	 		<if test="username != null and username != ''">
+				and u.username = #{username}
+	 		</if>
+	 		<if test="trueName != null and trueName != ''">
+				and c.true_name = #{trueName}
+	 		</if>
+	 		<if test="auditStatus > 0">
+				and c.audit_status = #{auditStatus}
+	 		</if> 
+		</trim>
+	</sql>
+	<select id="getCollarList" parameterType="com.qinfenqi.mall.collar.query.CollarQuery" resultType="com.qinfenqi.mall.collar.query.CollarQuery">
+		select c.*, u.username from qfq_core_collar c, qfq_core_users u <include refid="sqlFilter"/> ORDER BY ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	<select id="getCollarCount" parameterType="com.qinfenqi.mall.collar.query.CollarQuery" resultType="int" >
+		select count(*) from qfq_core_collar c, qfq_core_users u <include refid="sqlFilter"/>
+	</select>
+	
+	<!-- 更新授权码状态 -->
+	<update id="updateAuthCode" parameterType="com.qinfenqi.mall.bean.AuthCode">
+		update qfq_mall_auth_code set is_used = 2, used_time = #{usedTime} where mobile = #{mobile}
+	</update>
+	
+	<!-- 根据状态统计白领 -->
+	<select id="getCollarCounts" resultType="com.qinfenqi.mall.bean.Count">
+		select audit_status as name, count(*) as total from qfq_core_collar group by audit_status
+	</select>
+	
+	<!-- 更新collar表基本信息 -->
+	<update id="updateBaseInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			true_name = #{trueName},sex = #{sex},
+			id_card = #{idCard},
+			province = #{province},city = #{city},
+			district = #{district},street = #{street},
+			neighborhood = #{neighborhood},building = #{building},
+			unit = #{unit},floor = #{floor},room = #{room},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新collar表公司信息 -->
+	<update id="updateCompanyInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			company_name = #{companyName},company_type = #{companyType},
+			department = #{department},post = #{post},
+			company_address = #{companyAddress},company_contact_person = #{companyContactPerson},
+			company_fixed_telephone = #{companyfixedTelephone},company_phone = #{companyPhone},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新collar表邮寄信息 -->
+	<update id="updateMailInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			mail_province = #{mailProvince},mail_city = #{mailCity},
+			mail_district = #{mailDistrict},mail_street = #{mailStreet},
+			mail_neighborhood = #{mailNeighborhood},mail_building = #{mailBuilding},
+			mail_unit = #{mailUnit},mail_floor = #{mailFloor},mail_room = #{mailRoom},
+			mail_phone = #{mailPhone},mail_qq = #{mailQQ},
+			mail_weixin = #{mailWeixin},mail = #{mail},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新collar表家庭信息-->
+	<update id="updateHomeInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			father_name= #{fatherName},father_phone = #{fatherPhone},
+			mother_name = #{motherName},mother_phone = #{motherPhone},
+			wife_name = #{wifeName},wife_phone = #{wifePhone},
+			friend_name = #{friendName},friend_phone = #{friendPhone},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新collar表收入信息 -->
+	<update id="updateIncomeInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			education_level = #{educationLevel},family_income = #{familyIncome},
+			working_month = #{workingMonth},working_year_now = #{workingYearNow},
+			month_income = #{monthIncome},month_spends = #{monthSpends},
+			social_security_status = #{socialSecurityStatus},housing_status = #{housingStatus},
+			guarantee_name = #{guaranteeName},guarantee_phone= #{guaranteePhone},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新collar表银行卡 -->
+	<update id="updateBankcardInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			bank_card = #{bankCard}, bank_card_name = #{bankCardName},
+			bank_card_id = #{bankCardId},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 更新collar表 -->
+	<update id="updateUploadInfo" parameterType="com.qinfenqi.mall.collar.bean.Collar">
+		update qfq_core_collar set 
+			upload_card_detail = #{uploadCardDetail},
+			upload_flow_detail = #{uploadFlowDetail},upload_other_detail = #{uploadOtherDetail},
+			audit_status = #{auditStatus}
+		 	where user_id = #{userId}
+	</update>
+	
+	<!-- 上传补充资料 -->
+	<update id="updateCollarSpy" parameterType="com.qinfenqi.mall.collar.query.CollarQuery">
+		update qfq_core_collar set supply_photo = #{supplyPhoto} where collar_id = #{collarId}
+	</update>
+</mapper>

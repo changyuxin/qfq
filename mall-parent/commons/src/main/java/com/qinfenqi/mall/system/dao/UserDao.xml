@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.system.dao.UserDao">
+	<resultMap id="userMap" type="com.qinfenqi.mall.system.bean.User" > 
+		<id property="userId" column="user_id" />
+		<result property="userName" column="username" />
+		<result property="password" column="password" />
+		<result property="loginCount" column="login_count" />
+		<result property="roleId" column="role_id" />
+		<result property="createTime" column="create_time" />
+		<result property="registerIp" column="register_ip" />
+		<result property="lastLoginTime" column="last_login_time" />
+		<result property="lastLoginIp" column="last_login_ip" />
+		<result property="currentLoginTime" column="current_login_time" />
+		<result property="currentLoginIp" column="current_login_ip" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="district" column="district" />
+		<result property="userStatus" column="user_status" />
+		<result property="userStyle" column="user_style" />
+		<result property="isDelete" column="is_delete" />
+	</resultMap>
+	<resultMap id="mobileCodeMap" type="com.qinfenqi.mall.bean.MobileCode" > 
+		<id property="mobile" column="mobile" />
+		<result property="code" column="code" />
+		<result property="createTime" column="create_time" />
+	</resultMap>
+	
+	<!-- 添加用户 -->
+	<insert id="createUser" useGeneratedKeys="true" keyProperty="userId" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		insert into qfq_core_users(username, password, user_style, province, city, district, role_id, dept_id, register_ip) 
+			values(#{userName}, #{password}, #{userStyle}, #{province}, #{city}, #{district}, #{roleId}, #{deptId}, #{registerIp});
+	</insert>
+	
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			<if test="userName != null and userName != ''">
+				username like "%"#{userName}"%"
+	 		</if> 
+	 		<if test="province != null and province != ''">
+				and province = #{province}
+	 		</if>  
+	 		<if test="city != null and city != ''">
+				and city = #{city}
+	 		</if> 
+	 		<if test="district != null and district != ''">
+				and district = #{district}
+	 		</if> 
+	 		and u.user_style = #{userStyle} 
+	 		and u.user_id > 0 
+	 		and u.role_id = r.role_id
+	 		and u.is_delete = 1
+		</trim>
+	</sql>
+	
+	<!-- 查询后台用户列表 -->
+	<select id="getUserList" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultType="com.qinfenqi.mall.system.query.UserQuery">
+		select u.*, r.role_name, d.dept_name from qfq_core_role r, qfq_core_users u left join qfq_core_dept d on u.dept_id = d.dept_id <include refid="sqlFilter"/> ORDER BY ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	<!-- 查询后台用户列表 -->
+	<select id="getUserCount" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultType="int">
+		select count(1) from qfq_core_users u, qfq_core_role r <include refid="sqlFilter"/>
+	</select>
+	
+	<!-- 根据ID查询后台用户列表 -->
+	<select id="getUserByUserId" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultType="com.qinfenqi.mall.system.query.UserQuery">
+		select * from qfq_core_users u where user_id = #{userId};
+	</select>
+	
+	
+	<!-- 删除用户，逻辑删除 -->
+	<update id="deleteUser" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		update qfq_core_users set is_delete = 2 where user_id = #{userId}
+	</update>
+	<!-- 删除用户，物理删除 -->
+	<update id="deleteActualUser" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		delete from qfq_core_users where user_id = #{userId}
+	</update>
+	
+	<!-- 启用，停用用户 -->
+	<update id="enableUser" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		update qfq_core_users set user_status = #{userStatus} where user_id = #{userId}
+	</update>
+	
+	<!-- 添加会员 -->
+	<insert id="createMember" parameterType="com.qinfenqi.mall.member.bean.Member">
+		insert into qfq_core_member(user_id, phone, credit_limit, create_time) values(#{userId}, #{phone}, #{creditLimit}, #{createTime});
+	</insert>
+	
+	<!-- 用户登录 -->
+	<select id="getUserByUserName" parameterType="com.qinfenqi.mall.system.bean.User" resultMap="userMap">
+		select * from qfq_core_users where username = #{userName}
+	</select>
+	
+	<!-- 编辑后台用户 -->
+	<update id="modifyUser" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		update qfq_core_users u set 
+			u.username = #{userName},
+			u.province = #{province},
+			u.city = #{city},
+			u.district = #{district},
+			u.role_id = #{roleId},
+			u.dept_id = #{deptId}
+		where u.user_id = #{userId}
+	</update>
+	
+	
+	<!-- 更新用户信息 -->
+	<update id="updateUser" parameterType="com.qinfenqi.mall.system.bean.User">
+		update qfq_core_users u  
+		<trim prefix="SET" suffixOverrides=","> 
+			<if test="currentLoginIp != null and currentLoginIp != '' ">
+				u.current_login_ip = #{currentLoginIp},
+			</if>
+			<if test="loginCount > 0">
+				u.login_count = #{loginCount},
+		 	</if>
+		 	<if test="currentLoginTime != null">
+				u.current_login_time = #{currentLoginTime},
+			</if>
+			<if test="lastLoginIp != null and lastLoginIp != '' ">
+				u.last_login_ip = #{lastLoginIp},
+			</if>
+			<if test="lastLoginTime != null">
+				u.last_login_time = #{lastLoginTime},
+			</if>
+		</trim>
+		where u.user_id = #{userId}
+	</update>
+	
+	<insert id="createMobileCode" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		replace into qfq_mall_mobile_code(mobile, code) values(#{userName}, #{code});
+	</insert>
+	<select id="queryMobileCode" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultMap="mobileCodeMap">
+		select * from qfq_mall_mobile_code where mobile = #{userName} and code = #{code}
+	</select>
+	
+	<!-- 更新用户密码 -->
+	<update id="updateUserPassword" parameterType="com.qinfenqi.mall.system.bean.User">
+		update qfq_core_users u  
+			set	u.password = #{password}
+		where u.user_id = #{userId}
+	</update>
+	
+	<!-- 更新用户密码 -->
+	<update id="updateUserPasswordByPhone" parameterType="com.qinfenqi.mall.system.query.UserQuery">
+		update qfq_core_users u  
+			set	u.password = #{password}
+		where u.username = #{userName}
+	</update>
+	
+	<!-- 更新会员手机号 -->
+	<update id="updateMemberPhoneByUserId" parameterType="com.qinfenqi.mall.system.bean.User">
+		update qfq_core_member u  
+			set	u.phone = #{userName}
+		where u.user_id = #{userId}
+	</update>
+	
+	<!-- 根据手机号获取授权码记录 -->
+	<select id="getCodeListByMobile" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultType="com.qinfenqi.mall.bean.AuthCode">
+		select * from qfq_mall_auth_code where mobile = #{userName}
+	</select>
+	
+	<!-- 查询系统所有用户(除后台用户) -->
+	<sql id="userFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			<if test="userName != null and userName != ''">
+				username like "%"#{userName}"%"
+	 		</if> 
+			<if test="currentLoginIp != null and currentLoginIp != ''">
+				and current_login_ip like "%"#{currentLoginIp}"%"
+	 		</if> 
+			<if test="lastLoginIp != null and lastLoginIp != ''">
+				and last_login_ip like "%"#{lastLoginIp}"%"
+	 		</if> 
+			<if test="registerIp != null and registerIp != ''">
+				and register_ip like "%"#{registerIp}"%"
+	 		</if> 
+	 		<if test="userStyle > 0">
+				and u.user_style = #{userStyle}
+	 		</if>
+	 		and u.user_style > 0 
+	 		and u.user_id > 0
+	 		and u.is_delete = 1
+		</trim>
+	</sql>
+	<select id="getAllUserList" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultType="com.qinfenqi.mall.system.query.UserQuery">
+		select u.* from qfq_core_users u <include refid="userFilter"/> ORDER BY ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	<select id="getAllUserCount" parameterType="com.qinfenqi.mall.system.query.UserQuery" resultType="int">
+		select count(1) from qfq_core_users u <include refid="userFilter"/>
+	</select>
+	
+	<!-- 根据用户类型统计用户(除后台用户) -->
+	<select id="getAllUserCounts" resultType="com.qinfenqi.mall.bean.Count">
+		select user_style as name, count(*) as total from qfq_core_users where user_style > 0 group by user_style
+	</select>
+</mapper>

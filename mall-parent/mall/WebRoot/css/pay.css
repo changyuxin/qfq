@@ -1,0 +1,56 @@
+@charset "utf-8";
+/* CSS Document */
+#container{width:1200px;margin:20px auto;overflow:hidden;border: 1px solid #B3B3B3;}
+.order-area { position: relative;z-index: 10;}
+.orderDetail-base{background-color:#EFF4FF;border-bottom:3px solid #A3B5DB;padding:16px 20px;position:relative}
+.fn-clear:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0}
+.fn-clear{zoom:1}
+.fn-left{float:left}
+.commodity-message-row{height:22px;overflow:hidden;padding-top:14px}
+.commodity-message-row .second,.commodity-message-row .first{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.commodity-message-row .first{font-weight:700;font-size:14px;float:left}
+.commodity-message-row .second{margin-left:20px;float:left;margin-top:1px}
+.commodity-message-row .long-content{max-width:400px;_width:400px}
+.payAmount-area{position:absolute;bottom:16px;right:23px;text-align:right;z-index:1}
+.payAmount-area .amount-font-22{font-size:22px;line-height:22px;color:#f60}
+.payAmount-area .amount-font-14{font-size:14px;line-height:14px;color:#f60}
+.cashier-center-container { overflow: hidden; position: relative;z-index: 1; width: 950px;min-height: 460px ;background-color: #fff;}
+.cashier-center-view { position: relative; width: 803px;}
+.cashier-center-view.view-pc  {display: block;}
+.cashier-center-view.view-pc .loginBox { padding: 60px 0 20px 238px; width: 350px; margin: 0}
+.cashiser-switch-wrapper {margin-left:140px;}
+.qrcode-area {margin: 0 auto;position: relative;}
+.qrcode-integration .qrcode-header { display: block; width: auto; margin: 0; padding: 0;  margin-top: 75px;margin-bottom: 16px;}
+.qrcode-header-money { font-size: 26px;font-weight: 700;color: #f60;}
+.ft-center {text-align:center;}
+.qrcode-integration .qrcode-img-area {width: 168px;height: 168px;text-align: center;}
+.qrcode-img-area.qrcode-img-crash {height: 220px;}
+.qrcode-reward-wrapper {text-align: center;}
+.qrcode-reward {display: inline-block;margin: 0;padding: 2px 5px;background-color: #0188cd;border-radius: 0;font-size: 12px;line-height: 16px;color: #fff;}
+.qrcode-reward-question {font-size: 12px;margin-left: 5px;margin-right: 0;}
+.qrcode-integration .qrcode-loading {top: 70px;left: 60px;}
+.qrcode-integration .qrcode-img {top: 70px;left: 70px;}
+.qrcode-integration .qrcode-img-wrapper {position: relative;width: 168px;height: auto;min-height: 168px;margin: 0 auto;padding: 6px;border: 1px solid #d3d3d3;-webkit-box-shadow: 1px 1px 1px #ccc;box-shadow: 1px 1px 1px #ccc;}
+.qrcode-img-area .qrcode-busy-icon {padding-top: 15px;}
+.qrcode-img-area .qrcode-busy-text {margin-top: 20px;}
+a.mi-button-lwhite .mi-button-text {padding: 8px 39px 4px 36px;}
+.qrcode-img-area .mi-button {margin-top: 40px;}
+.qrcode-img-explain {padding: 10px 0 6px;}
+.qrcode-img-explain img {margin-left: 20px;margin-top: 5px;}
+.qrcode-img-explain div {margin-left: 10px;}
+.qrcode-foot {text-align: center;}
+.qrguide-area {position: absolute;top: 62px;left: 505px;width: 204px;height: 183px;cursor: pointer;}
+.qrguide-area .qrguide-area-img {display: block;position: absolute;bottom: 0;left: 0;z-index: -1;}
+.qrguide-area .qrguide-area-img.active {z-index: 10;}
+.qrguide-area .qrguide-area-img.background {z-index: 9;}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+validator.Checked=WebRoot/js/system/js/jquery.ztree.all-3.5.min.js,WebRoot/js/common/jquery/jquery-1.11.0.min.js,WebRoot/js/system/js/jquery.ztree.exedit-3.5.min.js,WebRoot/js/common/jquery/jquery-1.7.1.min.js,WebRoot/js/system/js/jquery.ztree.excheck-3.5.min.js
+validator.Unchecked=

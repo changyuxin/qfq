@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.manage.dao.FocusDao">
+	
+	<!-- 查询轮播图片 -->
+	<select id="getFocusImages" resultType="com.qinfenqi.mall.manage.bean.FocusImage">
+		select * from qfq_mall_focus where is_enable = 1 order by focus_order asc
+	</select>
+	
+	<!-- 查询所有轮播图片 -->	
+	<select id="getFocusImageList" parameterType="com.qinfenqi.mall.manage.bean.FocusImage" resultType="com.qinfenqi.mall.manage.bean.FocusImage">
+		select * from qfq_mall_focus order by ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	<select id="getFocusImageCount" parameterType="com.qinfenqi.mall.manage.bean.FocusImage" resultType="int">
+		select count(1) from qfq_mall_focus
+	</select>
+	
+	<!-- 根据ID查询轮播图 -->
+	<select id="getFocusImageById" parameterType="com.qinfenqi.mall.manage.bean.FocusImage" resultType="com.qinfenqi.mall.manage.bean.FocusImage">
+		select * from qfq_mall_focus where focus_id = #{focusId}
+	</select>
+	<!-- 添加轮播图 -->
+	<insert id="createFocusImage" parameterType="com.qinfenqi.mall.manage.bean.FocusImage">
+		insert into qfq_mall_focus (focus_desc, focus_link, image_url, bg_color, focus_order, create_time) values (#{focusDesc}, #{focusLink}, #{imageUrl}, #{bgColor}, #{focusOrder}, #{createTime})
+	</insert>
+	<!-- 编辑轮播图 -->
+	<update id="modifyFocusImage" parameterType="com.qinfenqi.mall.manage.bean.FocusImage">
+		update qfq_mall_focus
+		<trim prefix="SET" suffixOverrides=","> 
+			<if test="focusDesc != null and focusDesc != '' ">
+				focus_desc = #{focusDesc},
+			</if>
+			<if test="focusLink != null and focusLink != '' ">
+				focus_link = #{focusLink},
+		 	</if>
+		 	<if test="imageUrl != null and imageUrl != '' ">
+				image_url = #{imageUrl},
+			</if>
+			<if test="bgColor != null and bgColor != '' ">
+				bg_color = #{bgColor},
+			</if>
+			<if test="focusOrder > 0">
+				focus_order = #{focusOrder},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime}
+			</if>
+		</trim>
+		where focus_id = #{focusId}
+	</update>
+	<!-- 启用、停用 -->
+	<update id="enableFocus" parameterType="com.qinfenqi.mall.manage.bean.FocusImage">
+		update qfq_mall_focus set
+			is_enable = #{isEnable},
+			modify_time = #{modifyTime}
+		where focus_id = #{focusId}
+	</update>
+	<!-- 删除 -->
+	<delete id="deleteFocus" parameterType="com.qinfenqi.mall.manage.bean.FocusImage">
+		delete from qfq_mall_focus where focus_id = #{focusId}
+	</delete>
+</mapper>

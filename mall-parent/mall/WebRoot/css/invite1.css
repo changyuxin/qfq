@@ -1,0 +1,111 @@
+﻿@charset "utf-8";
+/* CSS Document */
+body,button,input,select,textarea{font:12px/1.5 tahoma,arial,"Hiragino Sans GB","Microsoft YaHei"}
+*{padding:0px;margin:0px;}
+a:link{text-decoration:none;outline: none;}
+a:visited {text-decoration:none;outline: none;}
+ul{list-style:none}
+.top_bgcolor {width:100%;margin:0 auto; height:600px;background-color:#d4f5fa;}
+.top_first {background-image:url(../mall/images/in_top.jpg);background-repeat:no-repeat;margin:0 auto;height:480px;width:1200px;}
+.container {position: relative;width:1200px;margin:0 auto}
+.benefit {background: #2782db;height: 700px; padding-top: 90px;}
+.benefit .h3-title,.benefit .p-title { color: #fff;}
+.benefit ul {margin-left: -25px;width: 1250px;}
+.benefit li {float: left; margin-left: 25px;margin-top: 80px;}
+.benefit li dl {margin-left: 18px; margin-top: 10px;width: 275px;}
+.benefit li dt {font-size: 18px;font-weight: bold;margin-bottom: 3px; color: #ffffff;}
+.benefit li dd { font-size: 16px; line-height: 20px;color: #fff;}
+.benefit .benefit-ul {overflow: hidden; width: 1200px;height: 338px;}
+.benefit .dot-box {margin-top: 80px;}
+.benefit .dot-box span {margin: 0 5px; cursor: pointer;}
+.benefit .dot-box .in { background-position: -400px -350px;}
+.fn-left,.fn-right{display:inline}
+.fn-left{float:left}
+.campus { height: 722px;background-color: #f8f8f8;color: #505253;padding: 90px 0 160px 0;}
+.campus .slogan { text-align: center;margin-top: 10px;}
+.campus .slogan .slogan-text {background-color: #ff3100;height: 44px;line-height: 44px;display: inline-block; position: relative;color: #fff;text-shadow: 1px 0 0 #350000;font-size: 20px;padding: 0 10px;}
+.campus .campus-ul {margin-left: -125px;margin-top: 50px;}
+.campus .campus-li {float: left; width: 520px;font-size: 16px; margin-left: 125px;}
+.campus .campus-li .post-name {font-size: 30px; border-bottom: 1px solid #d9eca0; padding-bottom: 5px;}
+.campus .campus-li ul {margin: 15px 0 20px 2px;}
+.campus .campus-li ul li {list-style: inside disc;}
+.campus .campus-li dl {height: auto;padding-bottom:20px;}
+.campus .campus-li dl dt {font-weight: bold; margin-bottom: 3px;}
+.campus .prove {text-align: center;font-size: 20px; margin-top: 30px;float:left;width:100%}
+.campus .btn-g {width: 100%;text-align: center;height: 49px;line-height: 49px;font-size: 22px;border-radius: 30px;display: block;background-color: #ff3100;text-decoration: none; color: #fff;margin-top: 20px;}
+.campus .btn-g:hover {background-color: #ff3100;}
+.culture { background: #ffffff;height: 540px;padding: 90px 0 110px; text-align: center;font-size: 18px;color: #868788;}
+.culture .p-title { padding-bottom: 20px;}
+.culture dl {margin-top: 40px;}
+.culture dl dd {padding-top:10px;}
+.h3-title,.p-title {text-align: center;color: #505253;}
+.h3-title {font-size: 36px;line-height: 45px;}
+.culture dt {font-size: 30px; color: #2782db;margin-bottom: 22px;}
+.graduate .check-btn-blue {display: inline-block; width: 222px; height: 59px;line-height: 59px;text-align: center; font-size: 26px; text-decoration: none; color: #2782db; background: url(../mall/images/icon.png) no-repeat;background-position: 0 0;}
+.graduate .check-btn-blue:hover {background-position: -230px 0;}
+.graduate .trip-btn {display: inline-block; padding: 0 12px;color: #97a9c0; height: 26px;border: 2px solid #819ebc;border-radius: 20px; line-height: 26px;font-size: 18px;text-decoration: none;margin-left: 20px;}
+.graduate .speech-ul {margin-top: 85px;}
+.graduate .speech-ul .speech-li {float: left; margin-left: 60px;*margin-left: 45px;}
+.graduate .speech-ul h5 {font-size: 14px; padding-left: 5px;  color: #d8dee7;}
+.graduate .speech-ul h1 {font-size: 50px; color: #2782db;}
+.graduate .speech-ul ul { margin-top: 33px;}
+.graduate .speech-ul li {font-size: 16px;border-left: 1px solid #587fa6; padding-left: 20px;padding-bottom: 30px;color: #d8dee6;}
+.graduate .speech-ul .school { font-size: 18px; font-weight: bold; position: relative;top: -10px;left: 0; color: #fff; width: 148px;}
+.a_invi {background-color:#ffffff;padding:20px 100px;font-size:24px;border-radius:50px;color: #2782db !important;}
+.a_div {text-align:center;padding-top:140px;}
+/*浮动*/
+.clear:after,.fn-clear:after,.poptip-container:after,.tipbox:after{visibility:hidden;content:" ";clear:both}
+/*icon*/
+.left-quot,.right-quot,.left-angle,.right-angle,.i-icon-1,.i-icon-2,.i-icon-3,.i-icon-4,.i-icon-5,.i-icon-6,.i-icon-7,.i-icon-8,.i-bg-part,.i-bg-full,.i-dot,.left-arrow,.right-arrow,
+.i-benefit-1,.i-benefit-2,.i-benefit-3,.i-benefit-4,.i-benefit-5,.i-benefit-6,.i-benefit-7,.i-benefit-8,.i-benefit-9,.i-benefit-10,.i-benefit-11,.i-benefit-12,
+.i-hollow-dot,.sm-dot,.i-left-bg,.i-right-bg,.i-top-arrow,.i-q-1,.i-q-2 {background: url(../mall/images/icon.png) no-repeat; display: inline-block;vertical-align: middle;}
+.left-quot,.right-quot { width: 56px; height: 52px;}
+.left-quot {background-position: 0 0;}
+.right-quot { background-position: -80px 0;}
+.left-angle {width: 14px;height: 44px; background-position: 0 -360px; position: absolute;left: -14px;top: 0;}
+.right-angle { width: 16px; height: 44px; background-position: -30px -360px;position: absolute;right: -16px;top: 0;}
+.i-icon-1,.i-icon-2,.i-icon-3,.i-icon-4,.i-icon-5,.i-icon-6,.i-icon-7,.i-icon-8 {width: 40px;height: 34px;vertical-align: -3px;}
+.i-icon-1 { background-position: 0 -90px;}
+.i-icon-2 {background-position: -60px -90px;}
+.i-icon-3 {background-position: -120px -90px;}
+.i-icon-4 { background-position: -160px 0;}
+.i-icon-5 { background-position: -210px 0;}
+.i-icon-6 {background-position: -260px 0;}
+.i-icon-7 {background-position: -160px -40px;}
+.i-icon-8 {background-position: -260px -40px;}
+.i-benefit-1,.i-benefit-2,.i-benefit-3,.i-benefit-4,.i-benefit-5,.i-benefit-6,.i-benefit-7,.i-benefit-8,.i-benefit-9,.i-benefit-10,.i-benefit-11,.i-benefit-12 {width: 89px;height: 89px;}
+.i-benefit-1 {background-position: -100px -250px;}
+.i-benefit-2 { background-position: -200px -250px;}
+.i-benefit-3 { background-position: -300px -250px;}
+.i-benefit-4 { background-position: -100px -350px;}
+.i-benefit-5 {background-position: -200px -350px;}
+.i-benefit-6 { background-position: -300px -350px;}
+.i-benefit-7 {background-position: 0 -150px;}
+.i-benefit-8 {background-position: -100px -150px;}
+.i-benefit-9 { background-position: -200px -150px;}
+.i-benefit-10 {background-position: -300px -150px;}
+.i-benefit-11 { background-position: -400px -150px;}
+.i-benefit-12 {background-position: 0 -250px;}
+.i-bg-part,.i-bg-full {width: 45px;height: 19px;text-align: center; color: #fff; font-size: 14px; line-height: 19px;}
+.i-bg-part {background-position: -180px -90px;}
+.i-bg-full { background-position: -240px -90px;}
+.i-hollow-dot { width: 9px; height: 9px;background-position: -420px -350px;}
+.sm-dot { width: 5px; height: 5px;background-position: -60px -380px;}
+.i-left-bg,.i-right-bg {width: 4px; height: 32px; display: none;}
+.i-left-bg { background-position: -400px -370px;}
+.i-right-bg { background-position: -410px -370px;}
+.left-arrow,.right-arrow {width: 27px; height: 110px; position: absolute;}
+.left-arrow {background-position: -400px 0;}
+.right-arrow { background-position: -450px 0;}
+.i-dot {width: 9px; height: 9px;background-position: -60px -360px;position: absolute;left: -25px; top: 7px;}
+.i-arrow-left,.i-arrow-right {width: 22px;height: 52px; position: absolute;top: 50%;margin-top: -26px; cursor: pointer; display: block;}
+.i-top-arrow {width: 49px; height: 18px;background-position: -450px -350px;}
+.i-q-1,.i-q-2 {width: 12px; height: 11px;position: absolute;}
+.i-q-1 {background-position: -320px 0;left: 0; top: 0;}
+.i-q-2 {background-position: -340px 0;right: 0; bottom: 0;}
+.tip-box {margin-top: 20px;}
+.tip-box dl { margin: 20px 0 40px;}
+.tip-box dt { font-size: 20px;color: #373737;margin-bottom: 3px;}
+.tip-box dd { font-size: 14px;color: #666;}
+.school-list-box {width: 366px;}
+

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.admin.system.dao.RoleDao">
+	
+	<!-- 创建角色 -->
+	<insert id="createRole"  useGeneratedKeys="true" keyProperty="roleId" parameterType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		insert into qfq_core_role (role_name, resource_ids, resource_names, create_time) 
+			values
+			(#{roleName}, #{resourceIds}, #{resourceNames}, #{createTime})
+	</insert>
+	
+	<!-- 编辑角色 -->
+	<update id="modifyRole">
+		update qfq_core_role set 
+			role_name = #{roleName},
+			resource_ids = #{resourceIds},
+			resource_names = #{resourceNames}
+		where role_id = #{roleId}	
+	</update>
+	
+	<!-- 删除角色 -->
+	<delete id="deleteRole" parameterType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		delete from qfq_core_role where role_id = #{roleId}
+	</delete>
+	
+	
+	<!-- 通过id查询角色  -->
+	<select id="getRoleById" parameterType="int" resultType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		select * from qfq_core_role where role_id = #{roleId}
+	</select>
+	
+	<!-- 查询角色列表(包含管理员) -->
+	<select id="getAllRoleList" resultType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		select * from qfq_core_role 
+	</select>
+	
+	<!-- 查询角色列表(除管理员外) -->
+	<select id="getUserRoleList" resultType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		select * from qfq_core_role  where role_id > 0
+	</select>
+	
+	<sql id="sqlFilter">
+		<trim prefix="where" prefixOverrides="and | or"> 
+			<if test="roleName != null and roleName != ''">
+				role_name like "%"#{roleName}"%"
+	 		</if> 
+	 		and role_id > 0
+		</trim>
+	</sql>
+	
+	<!-- 根据条件查询角色列表(除管理员外) -->
+	<select id="getRoleList" resultType="com.qinfenqi.mall.admin.system.query.RoleQuery" parameterType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		select * from qfq_core_role <include refid="sqlFilter"/> ORDER BY ${orderField} desc limit #{startNo}, #{pageSize}
+	</select>
+	
+	<!-- 根据条件查询角色列表(除管理员外) -->
+	<select id="getRoleCount" resultType="int" parameterType="com.qinfenqi.mall.admin.system.query.RoleQuery">
+		select count(1) from qfq_core_role <include refid="sqlFilter"/>
+	</select>
+	
+</mapper>

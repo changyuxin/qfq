@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qinfenqi.mall.pay.dao.PayDao">
+
+	<insert id="createPayLog" parameterType="com.qinfenqi.mall.pay.bean.PayLog">
+		insert into qfq_mall_pay_log
+				(pay_log_id, trade_no, user_id, trade_type, total, body, pay_type, rtn_cnt, request_params)
+			values
+				(#{payLogId}, #{tradeNo}, #{userId}, #{tradeType}, #{total}, #{body}, #{payType}, #{rtnCnt}, #{requestParams});
+	</insert>
+
+	<insert id="createWxuser" parameterType="com.qinfenqi.mall.bean.Wxuser">
+		replace into qfq_core_wxuser 
+				(user_id, open_id, is_subscribe)
+			values
+				(#{userId}, #{openId}, #{isSubscribe});
+	</insert>
+	
+	<select id="getPayLogByPayLogId" parameterType="com.qinfenqi.mall.pay.bean.Payment" resultType="com.qinfenqi.mall.pay.bean.PayLog">
+		select * from qfq_mall_pay_log where pay_log_id = #{outTradeNo}
+	</select>
+
+	<update id="updatePayLog" parameterType="com.qinfenqi.mall.pay.bean.PayLog">
+		update qfq_mall_pay_log set status = #{status}, response_params = #{responseParams} where pay_log_id = #{payLogId}
+	</update>
+	
+	<!-- 删除支付记录 -->
+	<delete id="deletePayLog" parameterType="com.qinfenqi.mall.pay.bean.PayLog">
+		delete from qfq_mall_pay_log where pay_log_id = #{payLogId}
+	</delete>
+	
+	<!-- 查看帐单的支付记录 -->
+	<select id="getPayList" parameterType="com.qinfenqi.mall.pay.bean.PayLog" resultType="com.qinfenqi.mall.pay.bean.PayLog">
+		select * from qfq_mall_pay_log where trade_type = #{tradeType } and trade_no = #{tradeNo }
+	</select>
+</mapper>
